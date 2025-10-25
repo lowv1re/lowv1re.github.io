@@ -12,13 +12,9 @@
       background-color: #000;
       color: #fff;
       font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
       overflow: hidden;
     }
+
     h1, .footer, .subtext {
       opacity: 0;
     }
@@ -30,6 +26,10 @@
     }
 
     h1 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       font-size: 10vw;
       margin: 0;
       line-height: 1;
@@ -37,15 +37,22 @@
     }
 
     .footer {
-      margin-top: 20px;
+      position: absolute;
+      bottom: 40px; /* чуть выше нижнего края */
+      width: 100%;
+      text-align: center;
       font-size: 1.5vw;
       opacity: 0;
       letter-spacing: 2px;
       animation: fadeIn 2s forwards;
-      animation-delay: 0.6s; /* нижняя надпись появляется после верхней на 30% */
+      animation-delay: 0.6s; /* появляется после верхней на 30% */
     }
 
     .subtext {
+      position: absolute;
+      bottom: 20px; /* прямо у нижнего края */
+      width: 100%;
+      text-align: center;
       font-size: 1.5vw;
       opacity: 0;
       letter-spacing: 1.5px;
@@ -67,7 +74,7 @@
 
   <!-- Счётчик посещений для тебя -->
   <script>
-    const secretKey = "2911";
+    const secretKey = "2911"; // можно менять
     const params = new URLSearchParams(window.location.search);
 
     if(params.get("key") === secretKey){
