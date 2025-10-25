@@ -59,8 +59,30 @@
   </style>
 </head>
 <body>
+  <h1>better than you</h1>
+  <div class="footer">total fucking darkness</div>
+  <div class="subtext">lowv1re</div>
 
+  <!-- Счётчик посещений для тебя -->
+  <script>
+    const secretKey = "2911"; // твой ключ для просмотра
+    const params = new URLSearchParams(window.location.search);
+
+    if(params.get("key") === secretKey){
+      let count = localStorage.getItem("visits") || 0;
+      count++;
+      localStorage.setItem("visits", count);
+
+      const counter = document.createElement("div");
+      counter.style.position = "absolute";
+      counter.style.top = "20px";
+      counter.style.right = "20px";
+      counter.style.color = "#fff";
+      counter.style.fontSize = "2vw";
+      counter.style.fontFamily = "Arial, sans-serif";
+      counter.innerText = "Visits: " + count;
+      document.body.appendChild(counter);
+    }
+  </script>
 </body>
 </html>
-
-
