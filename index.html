@@ -1,108 +1,88 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOWV1RE</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <title>lowv1re</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* верх по центру, низ прижат к экрану */
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
 
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Arial Black', sans-serif;
-            position: relative;
-        }
+    h1, .footer, .subtext {
+      opacity: 0;
+    }
 
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAC0ASwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlbaWmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9k=');
-            background-size: cover;
-            background-position: center;
-            filter: brightness(0.7);
-            z-index: 1;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
 
-        .fog-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, 
-                rgba(200, 200, 200, 0.3) 0%,
-                rgba(220, 220, 220, 0.5) 50%,
-                rgba(240, 240, 240, 0.7) 100%);
-            z-index: 2;
-            animation: fogMove 8s ease-in-out infinite alternate;
-        }
+    h1 {
+      font-size: 10vw;
+      margin: auto; /* по центру вертикали */
+      line-height: 1;
+      animation: fadeIn 2s forwards;
+    }
 
-        @keyframes fogMove {
-            0% {
-                opacity: 0.6;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 0.8;
-                transform: translateY(-20px);
-            }
-        }
+    .footer {
+      font-size: 1.5vw;
+      opacity: 0;
+      letter-spacing: 2px;
+      animation: fadeIn 2s forwards;
+      animation-delay: 0.6s;
+    }
 
-        .content {
-            position: relative;
-            z-index: 3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-        }
+    .subtext {
+      font-size: 1.5vw;
+      opacity: 0;
+      letter-spacing: 1.5px;
+      animation: fadeIn 2s forwards;
+      animation-delay: 0.8s;
+    }
 
-        .logo {
-            font-size: clamp(60px, 15vw, 200px);
-            font-weight: 900;
-            color: #ffffff;
-            text-shadow: 
-                0 0 20px rgba(0, 0, 0, 0.8),
-                0 0 40px rgba(0, 0, 0, 0.6),
-                0 5px 15px rgba(0, 0, 0, 0.9);
-            letter-spacing: 0.1em;
-            animation: fadeIn 2s ease-in;
-            user-select: none;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .logo {
-                font-size: clamp(40px, 12vw, 100px);
-            }
-        }
-    </style>
+    @media (max-width: 600px) {
+      h1 { font-size: 15vw; }
+      .footer, .subtext { font-size: 3vw; }
+    }
+  </style>
 </head>
 <body>
-    <div class="background"></div>
-    <div class="fog-overlay"></div>
-    <div class="content">
-        <h1 class="logo">LOWV1RE</h1>
-    </div>
+  <h1>better than you</h1>
+  <div class="footer">total fucking darkness</div>
+  <div class="subtext">lowv1re</div>
+
+  <!-- Счётчик посещений для тебя -->
+  <script>
+    const secretKey = "2911"; // твой ключ для просмотра
+    const params = new URLSearchParams(window.location.search);
+
+    if(params.get("key") === secretKey){
+      let count = localStorage.getItem("visits") || 0;
+      count++;
+      localStorage.setItem("visits", count);
+
+      const counter = document.createElement("div");
+      counter.style.position = "absolute";
+      counter.style.top = "20px";
+      counter.style.right = "20px";
+      counter.style.color = "#fff";
+      counter.style.fontSize = "2vw";
+      counter.style.fontFamily = "Arial, sans-serif";
+      counter.innerText = "Visits: " + count;
+      document.body.appendChild(counter);
+    }
+  </script>
 </body>
 </html>
