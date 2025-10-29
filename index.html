@@ -64,22 +64,39 @@
 
         /* Header */
         .header {
-            background: linear-gradient(90deg, #ff6b00 0%, #ff8c00 100%);
+            background: 
+                linear-gradient(rgba(20, 10, 5, 0.85), rgba(40, 20, 10, 0.9)),
+                url('https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=1200&q=80');
+            background-size: cover;
+            background-position: center;
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 20px rgba(255, 107, 0, 0.5);
-            position: sticky;
-            top: 0;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 80px);
+            max-width: 1400px;
+            border-radius: 25px;
             z-index: 1000;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            border: 2px solid rgba(255, 107, 0, 0.6);
+        }
+
+        .header.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+            pointer-events: none;
         }
 
         .logo {
             font-size: 32px;
             font-weight: 900;
-            color: #000;
-            text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.8), 2px 2px 4px rgba(0, 0, 0, 0.8);
             letter-spacing: 2px;
         }
 
@@ -89,22 +106,23 @@
         }
 
         .nav a {
-            color: #000;
+            color: #fff;
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s;
             font-size: 16px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .nav a:hover {
-            color: #fff;
-            text-shadow: 0 0 10px #fff;
+            color: #ff8c00;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.8);
         }
 
         /* Hero Section */
         .hero {
             text-align: center;
-            padding: 60px 20px;
+            padding: 140px 20px 60px;
         }
 
         .hero h1 {
@@ -392,6 +410,9 @@
             .header {
                 flex-direction: column;
                 gap: 20px;
+                width: calc(100% - 40px);
+                top: 10px;
+                padding: 15px 20px;
             }
             
             .games-grid {
@@ -400,6 +421,10 @@
             
             .hero h1 {
                 font-size: 32px;
+            }
+
+            .hero {
+                padding-top: 120px;
             }
 
             .price-row {
@@ -411,7 +436,7 @@
 </head>
 <body>
     <div class="content-wrapper">
-        <div class="header">
+        <div class="header" id="header">
             <div class="logo">🎃 LOWV1RE</div>
             <div class="nav">
                 <a href="#games">Игры</a>
@@ -665,5 +690,30 @@
             <p style="margin-top: 30px; color: #888; font-size: 14px;">© 2024 LOWV1RE. Все права защищены.</p>
         </div>
     </div>
+
+    <script>
+        // Скрываем header при прокрутке вниз
+        let lastScroll = 0;
+        const header = document.getElementById('header');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                if (currentScroll > lastScroll) {
+                    // Прокрутка вниз - скрываем
+                    header.classList.add('hidden');
+                } else {
+                    // Прокрутка вверх - показываем
+                    header.classList.remove('hidden');
+                }
+            } else {
+                // В самом верху страницы - всегда показываем
+                header.classList.remove('hidden');
+            }
+
+            lastScroll = currentScroll;
+        });
+    </script>
 </body>
 </html>
