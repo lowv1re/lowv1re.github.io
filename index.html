@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-   <!DOCTYPE html>
-<html lang="ru">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOWV1RE - Магазин игровых услуг</title>
@@ -11,7 +8,7 @@
         * {
             margin: 0;
             padding: 0;
-            box‑sizing: border-box;
+            box-sizing: border-box;
         }
 
         body {
@@ -31,10 +28,10 @@
             width: 100%;
             height: 100%;
             background: 
-                radial‑gradient(ellipse at top, rgba(139, 0, 0, 0.3) 0%, transparent 50%),
-                radial‑gradient(ellipse at bottom, rgba(75, 0, 130, 0.3) 0%, transparent 50%),
-                radial‑gradient(circle at 20% 30%, rgba(255, 107, 0, 0.1) 0%, transparent 40%),
-                radial‑gradient(circle at 80% 70%, rgba(139, 0, 139, 0.1) 0%, transparent 40%);
+                radial-gradient(ellipse at top, rgba(139, 0, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(75, 0, 130, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 20% 30%, rgba(255, 107, 0, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(139, 0, 139, 0.1) 0%, transparent 40%);
             z-index: 0;
         }
 
@@ -118,7 +115,7 @@
 
         .nav a:hover {
             color: #ff8c00;
-            text-shadow: 0 0 10px rgba(255, 140, 0.8);
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.8);
         }
 
         .hero {
@@ -130,7 +127,7 @@
             font-size: 48px;
             margin-bottom: 20px;
             color: #ff8c00;
-            text-shadow: 0 0 20px rgba(255, 140, 0.8);
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
             line-height: 1.3;
         }
 
@@ -151,7 +148,7 @@
             margin-bottom: 30px;
             color: #ff8c00;
             text-align: center;
-            text-shadow: 0 0 15px rgba(255, 140, 0.5);
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
         }
 
         .games-grid {
@@ -170,14 +167,10 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            min-height: 450px;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background-size: cover;
-            background-position: center;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.6);
         }
 
         .game-card::before {
@@ -187,9 +180,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.4);
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4);
             z-index: 0;
-            transition: opacity 0.4s;
+            transition: all 0.4s;
         }
 
         .game-card > * {
@@ -198,11 +193,7 @@
         }
 
         .game-card:hover {
-            transform: translateY(-15px) scale(1.02);
-        }
-
-        .game-card:hover::before {
-            opacity: 0.2;
+            transform: translateY(-10px) scale(1.02);
         }
 
         .game-icon {
@@ -222,13 +213,16 @@
         .game-card h3 {
             font-size: 26px;
             margin-bottom: 12px;
+            color: #fff;
             text-align: center;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .game-card p {
+            color: rgba(255, 255, 255, 0.9);
             font-size: 15px;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .price-row {
@@ -313,56 +307,60 @@
             transform: scale(1.1);
         }
 
-        .pumpkin {
-            display: inline-block;
-            animation: float 3s ease‑in‑out infinite;
-        }
-
-        .mobile-break {
-            display: none;
-        }
-
-        @keyframes float {
-            0%,100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
-        }
-
         @media (max-width: 768px) {
-            .mobile-break {
-                display: block;
-            }
-
-            .header {
-                flex-direction: column;
-                gap: 20px;
-                width: calc(100% - 40px);
-                top: 10px;
-                padding: 15px 20px;
-            }
-
             .games-grid {
                 grid-template-columns: 1fr;
             }
-
-            .hero {
-                padding-top: 140px;
-            }
-
-            .hero h1 {
-                font-size: 24px;
-                line-height: 1.4;
-            }
-
-            .hero h1 .pumpkin {
-                display: block;
-                margin: 10px 0;
-                font-size: 32px;
-            }
-
             .price-row {
                 flex-direction: column;
                 gap: 10px;
             }
+        }
+
+        /* Тематические фоны */
+        .card-brawl::before {
+            background-image: url('https://wallpapers.com/images/hd/brawl-stars-background-iio2hzqp8ehgifsu.jpg');
+            border-color: #ce93d8;
+        }
+
+        .card-roblox::before {
+            background-image: url('https://cdn.soft112.com/wallpapers-rblx-rblx-game-free-wallpapers/00/00/0H/E6/00000HE6J7/pad_screenshot.jpg');
+            border-color: #ff6b6b;
+        }
+
+        .card-csgo::before {
+            background-image: url('https://i.pinimg.com/originals/ff/c3/8d/ffc38d9bce22d7a9eaa07b890e3af1a2.jpg');
+            border-color: #64b5f6;
+        }
+
+        .card-minecraft::before {
+            background-image: url('https://wallpapercave.com/wp/wp2752466.jpg');
+            border-color: #81c784;
+        }
+
+        .card-valorant::before {
+            background-image: url('https://wallpaperaccess.com/full/3720647.jpg');
+            border-color: #ff4081;
+        }
+
+        .card-fortnite::before {
+            background-image: url('https://wallpaperaccess.com/full/1107730.jpg');
+            border-color: #4dd0e1;
+        }
+
+        .card-genshin::before {
+            background-image: url('https://wallpapers.com/images/hd/genshin-impact-1-2jml7e9rpb3ekqj2.jpg');
+            border-color: #ffb74d;
+        }
+
+        .card-telegram::before {
+            background-image: url('https://i.pinimg.com/originals/68/f4/6b/68f46bc6747b5e9d96b73e3efbba9a7d.png');
+            border-color: #33bbff;
+        }
+
+        .card-steam::before {
+            background-image: url('https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&q=80');
+            border-color: #66c0f4;
         }
     </style>
 </head>
@@ -378,16 +376,15 @@
         </div>
 
         <div class="hero">
-            <h1><span class="pumpkin">👻</span><br class="mobile-break">Магазин игровых услуг<br class="mobile-break"><span class="pumpkin">🎃</span></h1>
+            <h1><span class="pumpkin">👻</span><br>Магазин игровых услуг<br><span class="pumpkin">🎃</span></h1>
             <p>Прокачка, донат, услуги для любимых игр!</p>
         </div>
 
         <div class="container" id="games">
             <h2 class="section-title">🎮 Популярные игры</h2>
-            
             <div class="games-grid">
                 <!-- Brawl Stars -->
-                <div class="game-card card-brawl" style="background: linear-gradient(rgba(30,15,50,0.80), rgba(50,25,70,0.88)), url('https://images.unsplash.com/photo-1580327344181-c1163234e5a0?w=800&q=80'); border-color: #ce93d8;">
+                <div class="game-card card-brawl">
                     <div>
                         <div class="game-icon">⭐</div>
                         <h3>Brawl Stars</h3>
@@ -413,7 +410,7 @@
                 </div>
 
                 <!-- Roblox -->
-                <div class="game-card card-roblox" style="background: linear-gradient(rgba(40,15,15,0.78), rgba(70,25,25,0.88)), url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80'); border-color: #ff6b6b;">
+                <div class="game-card card-roblox">
                     <div>
                         <div class="game-icon">🎮</div>
                         <h3>Roblox</h3>
@@ -439,7 +436,7 @@
                 </div>
 
                 <!-- CS:GO -->
-                <div class="game-card card-csgo" style="background: linear-gradient(rgba(15,25,40,0.78), rgba(20,35,60,0.88)), url('https://wallpaper.dog/cs-go/3840x2160/1075059‑cs‑go‑4k‑wallpaper.jpg'); border-color: #64b5f6;">
+                <div class="game-card card-csgo">
                     <div>
                         <div class="game-icon">🔫</div>
                         <h3>CS:GO</h3>
@@ -465,7 +462,7 @@
                 </div>
 
                 <!-- Minecraft -->
-                <div class="game-card card-minecraft" style="background: linear-gradient(rgba(20,35,20,0.78), rgba(30,50,30,0.88)), url('https://wallpaper.dog/4k‑minecraft‑wallpapers/4000x2250‑minecraft‑4k‑wallpaper.jpg'); border-color: #81c784;">
+                <div class="game-card card-minecraft">
                     <div>
                         <div class="game-icon">⚔️</div>
                         <h3>Minecraft</h3>
@@ -491,7 +488,7 @@
                 </div>
 
                 <!-- Valorant -->
-                <div class="game-card card-valorant" style="background: linear-gradient(rgba(40,15,15,0.78), rgba(65,20,20,0.88)), url('https://wall.alphacoders.com/big.php?i=1360644'); border-color: #ff4081;">
+                <div class="game-card card-valorant">
                     <div>
                         <div class="game-icon">🎯</div>
                         <h3>Valorant</h3>
@@ -517,11 +514,11 @@
                 </div>
 
                 <!-- Fortnite -->
-                <div class="game-card card-fortnite" style="background: linear-gradient(rgba(10,30,50,0.78), rgba(15,45,70,0.88)), url('https://wallpapersden.com/fortnite‑season‑4‑wallpaper/2560x1400'); border-color: #4dd0e1;">
+                <div class="game-card card-fortnite">
                     <div>
                         <div class="game-icon">🏆</div>
                         <h3>Fortnite</h3>
-                        <p>V‑Bucks, батл‑пасс, эксклюзивные скины</p>
+                        <p>V-Bucks, батл-пасс, эксклюзивные скины</p>
                     </div>
                     <div>
                         <div class="price-row">
@@ -535,7 +532,7 @@
                             </div>
                             <div class="price-item">
                                 <div class="price-label">EUR</div>
-                                <div the=”price-value”>€2.5</div>
+                                <div class="price-value">€2.5</div>
                             </div>
                         </div>
                         <button class="btn">Купить</button>
@@ -543,7 +540,7 @@
                 </div>
 
                 <!-- Genshin Impact -->
-                <div class="game-card card-genshin" style="background: linear-gradient(rgba(50,25,10,0.78), rgba(70,35,15,0.88)), url('https://upload-os-bbs.mihoyo.com/game_record/genshin/1.png'); border-color: #ffb74d;">
+                <div class="game-card card-genshin">
                     <div>
                         <div class="game-icon">⚡</div>
                         <h3>Genshin Impact</h3>
@@ -569,7 +566,7 @@
                 </div>
 
                 <!-- Telegram Stars -->
-                <div class="game-card card-telegram" style="background: linear-gradient(rgba(10,25,40,0.78), rgba(15,35,55,0.88)), url('https://wallpapersok.com/wallpapers/telegram‑blue‑background‑stars‑h67b6q25p58ekil8.html'); border-color: #33bbff;">
+                <div class="game-card card-telegram">
                     <div>
                         <div class="game-icon">⭐</div>
                         <h3>Telegram Stars</h3>
@@ -586,7 +583,7 @@
                                 <div class="price-value">$0.9</div>
                             </div>
                             <div class="price-item">
-                                <div the=”price-label”>EUR</div>
+                                <div class="price-label">EUR</div>
                                 <div class="price-value">€0.8</div>
                             </div>
                         </div>
@@ -595,7 +592,7 @@
                 </div>
 
                 <!-- Steam -->
-                <div class="game-card card-steam" style="background: linear-gradient(rgba(20,20,28,0.82), rgba(30,30,40,0.90)), url('https://cdn.cloudflare.steamstatic.com/steam/apps/753/header.jpg'); border-color: #66c0f4;">
+                <div class="game-card card-steam">
                     <div>
                         <div class="game-icon">🎮</div>
                         <h3>Steam</h3>
@@ -608,11 +605,11 @@
                                 <div class="price-value">100₽</div>
                             </div>
                             <div class="price-item">
-                                <div the=”price-label”>USD</div>
+                                <div class="price-label">USD</div>
                                 <div class="price-value">$1.1</div>
                             </div>
                             <div class="price-item">
-                                <div the=”price-label”>EUR</div>
+                                <div class="price-label">EUR</div>
                                 <div class="price-value">€1.0</div>
                             </div>
                         </div>
@@ -639,7 +636,6 @@
 
         window.addEventListener('scroll', () => {
             const currentScroll = window.pageYOffset;
-
             if (currentScroll > 100) {
                 if (currentScroll > lastScroll) {
                     header.classList.add('hidden');
@@ -649,7 +645,6 @@
             } else {
                 header.classList.remove('hidden');
             }
-
             lastScroll = currentScroll;
         });
     </script>
