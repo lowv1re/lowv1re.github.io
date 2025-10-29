@@ -1,295 +1,191 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOWV1RE - Магазин игровых услуг</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lowv1re - Game Cards</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #0a0000, #000);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            color: #fff;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-shadow: 0 0 20px red;
+      letter-spacing: 3px;
+    }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(ellipse at top, rgba(139, 0, 0, 0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom, rgba(75, 0, 130, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 20% 30%, rgba(255, 107, 0, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(139, 0, 139, 0.1) 0%, transparent 40%);
-            z-index: 0;
-        }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
 
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-        }
+    .card {
+      position: relative;
+      width: 300px;
+      height: 420px;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        /* Header */
-        .header {
-            background: linear-gradient(90deg, #ff6b00 0%, #ff8c00 100%);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.5);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+    }
 
-        .logo {
-            font-size: 32px;
-            font-weight: 900;
-            color: #000;
-            text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff;
-            letter-spacing: 2px;
-        }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      transition: 0.5s ease;
+    }
 
-        .nav {
-            display: flex;
-            gap: 30px;
-        }
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 2;
+    }
 
-        .nav a {
-            color: #000;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-            font-size: 16px;
-        }
+    .card-content {
+      position: relative;
+      z-index: 3;
+      padding: 20px;
+    }
 
-        .nav a:hover {
-            color: #fff;
-            text-shadow: 0 0 10px #fff;
-        }
+    .card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
 
-        /* Hero */
-        .hero {
-            text-align: center;
-            padding: 60px 20px;
-        }
+    .card p {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
 
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #ff8c00;
-            text-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
-        }
+    .prices {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
 
-        .hero p {
-            font-size: 20px;
-            color: #ffa500;
-            margin-bottom: 30px;
-        }
+    .prices div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        /* Games Grid */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+    .prices span {
+      font-weight: bold;
+      color: #00ff66;
+    }
 
-        .section-title {
-            font-size: 32px;
-            margin-bottom: 30px;
-            color: #ff8c00;
-            text-align: center;
-            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
-        }
+    button {
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 30px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
+    button:hover {
+      background: #ff3300;
+      color: white;
+    }
 
-        .game-card {
-            border-radius: 20px;
-            padding: 30px;
-            border: 3px solid;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            min-height: 360px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background-size: cover;
-            background-position: center;
-        }
+    /* фоны карточек */
+    .brawl::before {
+      background-image: url('https://i.imgur.com/5CzWjLX.jpg');
+    }
 
-        .game-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 0;
-        }
+    .roblox::before {
+      background-image: url('https://i.imgur.com/r4SgybH.jpg');
+    }
 
-        .game-card > * {
-            position: relative;
-            z-index: 1;
-        }
+    .csgo::before {
+      background-image: url('https://i.imgur.com/CzPufrF.jpg');
+    }
 
-        .game-card:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
-
-        /* Backgrounds per game */
-        .card-brawl { background-image: url('https://i.imgur.com/0wLGE3M.jpg'); border-color: #ce93d8; }
-        .card-roblox { background-image: url('https://i.imgur.com/Dw4u7gy.jpg'); border-color: #ff6b6b; }
-        .card-csgo { background-image: url('https://i.imgur.com/HfROxMb.jpg'); border-color: #64b5f6; }
-        .card-minecraft { background-image: url('https://i.imgur.com/p4eQYhY.jpg'); border-color: #81c784; }
-        .card-valorant { background-image: url('https://i.imgur.com/D4sGyEo.jpg'); border-color: #ff4081; }
-        .card-fortnite { background-image: url('https://i.imgur.com/rZqszYm.jpg'); border-color: #4dd0e1; }
-        .card-genshin { background-image: url('https://i.imgur.com/kb9i0bL.jpg'); border-color: #ffb74d; }
-        .card-telegram { background-image: url('https://i.imgur.com/QNoF5L1.jpg'); border-color: #33bbff; }
-        .card-steam { background-image: url('https://i.imgur.com/Zi4zvRf.jpg'); border-color: #66c0f4; }
-
-        .game-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            margin: 0 auto 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        .game-card h3 {
-            font-size: 26px;
-            margin-bottom: 10px;
-        }
-
-        .game-card p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.9);
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-around;
-            background: rgba(0,0,0,0.4);
-            border-radius: 10px;
-            padding: 10px;
-            margin-top: 15px;
-        }
-
-        .price-item {
-            text-align: center;
-        }
-
-        .price-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #00ff88;
-        }
-
-        .btn {
-            margin-top: 15px;
-            background: #fff;
-            color: #000;
-            padding: 12px;
-            border: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px #fff;
-        }
-
-        /* Footer */
-        .footer {
-            background: linear-gradient(90deg, #1a0a2e 0%, #2d1b4e 100%);
-            padding: 40px;
-            text-align: center;
-            border-top: 3px solid #ff6b00;
-        }
-
-        .contact a {
-            color: #ffa500;
-            text-decoration: none;
-            border: 2px solid #ff6b00;
-            padding: 10px 25px;
-            border-radius: 25px;
-            transition: all 0.3s;
-        }
-
-        .contact a:hover {
-            background: #ff6b00;
-            color: #000;
-            transform: scale(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .games-grid { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 32px; }
-        }
-    </style>
+    @media (max-width: 1000px) {
+      .cards {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="content-wrapper">
-        <div class="header">
-            <div class="logo">🎃 LOWV1RE</div>
-            <div class="nav">
-                <a href="#games">Игры</a>
-                <a href="#contact">Контакты</a>
-            </div>
-        </div>
+  <h1>Популярные игры</h1>
 
-        <div class="hero">
-            <h1>👻 Магазин игровых услуг 🎃</h1>
-            <p>Прокачка, донат, услуги для любимых игр!</p>
+  <div class="cards">
+    <div class="card brawl">
+      <div class="card-content">
+        <h2>Brawl Stars</h2>
+        <p>Гемы, аккаунты, прокачка персонажей</p>
+        <div class="prices">
+          <div><small>RUB</small><span>100₽</span></div>
+          <div><small>USD</small><span>$1.1</span></div>
+          <div><small>EUR</small><span>€1.0</span></div>
         </div>
-
-        <div class="container" id="games">
-            <h2 class="section-title">🎮 Популярные игры</h2>
-            
-            <div class="games-grid">
-                <div class="game-card card-brawl"><div><div class="game-icon">⭐</div><h3>Brawl Stars</h3><p>Гемы, аккаунты, прокачка</p></div><div class="price-row"><div class="price-item"><div class="price-value">100₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-roblox"><div><div class="game-icon">🎮</div><h3>Roblox</h3><p>Robux и премиум</p></div><div class="price-row"><div class="price-item"><div class="price-value">150₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-csgo"><div><div class="game-icon">🔫</div><h3>CS:GO</h3><p>Скины, буст, аккаунты</p></div><div class="price-row"><div class="price-item"><div class="price-value">200₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-minecraft"><div><div class="game-icon">⛏️</div><h3>Minecraft</h3><p>Донат и привилегии</p></div><div class="price-row"><div class="price-item"><div class="price-value">50₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-valorant"><div><div class="game-icon">🎯</div><h3>Valorant</h3><p>VP, скины, буст</p></div><div class="price-row"><div class="price-item"><div class="price-value">300₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-fortnite"><div><div class="game-icon">🏆</div><h3>Fortnite</h3><p>V-Bucks, батл-пасс</p></div><div class="price-row"><div class="price-item"><div class="price-value">250₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-genshin"><div><div class="game-icon">⚡</div><h3>Genshin Impact</h3><p>Аккаунты и примогемы</p></div><div class="price-row"><div class="price-item"><div class="price-value">100₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-telegram"><div><div class="game-icon">⭐</div><h3>Telegram Stars</h3><p>Звезды и подписки</p></div><div class="price-row"><div class="price-item"><div class="price-value">80₽</div></div></div><button class="btn">Купить</button></div>
-                <div class="game-card card-steam"><div><div class="game-icon">🎮</div><h3>Steam</h3><p>Игры и пополнение</p></div><div class="price-row"><div class="price-item"><div class="price-value">100₽</div></div></div><button class="btn">Купить</button></div>
-            </div>
-        </div>
-
-        <div class="footer" id="contact">
-            <h3>🎃 Связаться со мной</h3>
-            <p>Пиши в Telegram:</p>
-            <div class="contact"><a href="https://t.me/lowv1rre" target="_blank">@lowv1rre</a></div>
-            <p style="margin-top: 30px; color: #888; font-size: 14px;">© 2025 LOWV1RE. Все права защищены.</p>
-        </div>
+        <button>Купить</button>
+      </div>
     </div>
+
+    <div class="card roblox">
+      <div class="card-content">
+        <h2>Roblox</h2>
+        <p>Robux, игровые валюты, премиум</p>
+        <div class="prices">
+          <div><small>RUB</small><span>150₽</span></div>
+          <div><small>USD</small><span>$1.6</span></div>
+          <div><small>EUR</small><span>€1.5</span></div>
+        </div>
+        <button>Купить</button>
+      </div>
+    </div>
+
+    <div class="card csgo">
+      <div class="card-content">
+        <h2>CS:GO</h2>
+        <p>Скины, аккаунты, буст рейтинга</p>
+        <div class="prices">
+          <div><small>RUB</small><span>200₽</span></div>
+          <div><small>USD</small><span>$2.2</span></div>
+          <div><small>EUR</small><span>€2.0</span></div>
+        </div>
+        <button>Купить</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
