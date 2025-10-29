@@ -62,13 +62,10 @@
         }
 
         .subtitle {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
             font-size: 2rem;
             color: #cc0000;
             text-shadow: 0 0 10px #ff0000, 0 0 20px #990000;
+            margin-bottom: 40px;
             animation: pulse 2s infinite;
         }
 
@@ -92,13 +89,61 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         @keyframes glowPulse {
             0%, 100% { text-shadow: 0 0 15px #ff0000, 0 0 30px #990000; }
             50% { text-shadow: 0 0 25px #ff0000, 0 0 50px #990000, 0 0 70px #660000; }
+        }
+
+        .pumpkin {
+            position: absolute;
+            font-size: 5rem;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.6;
+            filter: drop-shadow(0 0 20px #ff3300) brightness(0.7);
+            z-index: 1;
+        }
+
+        .pumpkin:nth-child(1) {
+            top: 2%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .pumpkin:nth-child(2) {
+            top: 2%;
+            right: 5%;
+            animation-delay: 1s;
+        }
+
+        .pumpkin:nth-child(3) {
+            bottom: 5%;
+            left: 5%;
+            animation-delay: 2s;
+        }
+
+        .pumpkin:nth-child(4) {
+            bottom: 5%;
+            right: 5%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-8px) rotate(-5deg);
+            }
         }
 
         .particles {
@@ -134,9 +179,17 @@
         }
 
         @keyframes flyBat {
-            0% { left: -50px; top: 20%; }
-            50% { top: 60%; }
-            100% { left: 110%; top: 30%; }
+            0% {
+                left: -50px;
+                top: 20%;
+            }
+            50% {
+                top: 60%;
+            }
+            100% {
+                left: 110%;
+                top: 30%;
+            }
         }
 
         .spider-web {
@@ -189,8 +242,10 @@
 </head>
 <body>
     <div class="fog"></div>
+    
     <div class="particles" id="particles"></div>
-
+    
+    <!-- Spider webs in corners -->
     <svg class="spider-web left" viewBox="0 0 200 200">
         <path d="M0,0 L100,100 M0,50 L100,100 M0,100 L100,100 M50,0 L100,100 M100,0 L100,100" 
               stroke="#666" stroke-width="1" fill="none"/>
@@ -204,26 +259,35 @@
               stroke="#666" stroke-width="0.5" fill="none"/>
     </svg>
 
+    <!-- Blood drips -->
     <div class="blood-drip" style="left: 15%; top: 0; animation-delay: 0s;"></div>
     <div class="blood-drip" style="left: 35%; top: 0; animation-delay: 1s;"></div>
     <div class="blood-drip" style="left: 65%; top: 0; animation-delay: 2s;"></div>
     <div class="blood-drip" style="left: 85%; top: 0; animation-delay: 1.5s;"></div>
-
+    
+    <!-- Bats -->
     <div class="bat" style="animation-delay: 0s;">🦇</div>
     <div class="bat" style="animation-delay: 5s; animation-duration: 20s;">🦇</div>
     <div class="bat" style="animation-delay: 10s; animation-duration: 18s;">🦇</div>
-
+    
+    <!-- Skulls -->
     <div class="skull" style="top: 15%; left: 20%; animation-delay: 0s;">💀</div>
     <div class="skull" style="top: 70%; right: 20%; animation-delay: 3s;">💀</div>
+    
+    <div class="pumpkin">🎃</div>
+    <div class="pumpkin">🎃</div>
+    <div class="pumpkin">🎃</div>
+    <div class="pumpkin">🎃</div>
 
     <div class="content">
         <div class="main-text">BETTER THAN YOU</div>
+        <div class="subtitle">TOTAL FUCKING DARKNESS</div>
     </div>
-
-    <div class="subtitle">TOTAL FUCKING DARKNESS</div>
+    
     <div class="signature">LOWV1RE</div>
 
     <script>
+        // Создание падающих частиц
         const particlesContainer = document.getElementById('particles');
         for (let i = 0; i < 30; i++) {
             const particle = document.createElement('div');
