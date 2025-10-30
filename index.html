@@ -23,9 +23,9 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .lang-switch:hover{background:rgba(255,140,0,0.1);color:#ff8c00;}
 .auth-btn{background:linear-gradient(135deg, #ff6b00, #ff8c00);color:#fff;border:none;padding:8px 20px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:14px;transition:all 0.3s;box-shadow:0 4px 15px rgba(255,107,0,0.4);}
 .auth-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(255,107,0,0.6);}
-.user-info{display:flex;align-items:center;gap:10px;padding:5px 15px;background:rgba(255,140,0,0.1);border-radius:20px;border:2px solid rgba(255,140,0,0.4);}
-.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg, #ff6b00, #ff8c00);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;}
-.user-name{font-size:14px;color:#ffa500;font-weight:bold;}
+.user-info{display:flex;align-items:center;gap:10px;padding:5px 15px;background:rgba(255,140,0,0.1);border-radius:20px;border:2px solid rgba(255,140,0,0.4);cursor:pointer;}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg, #ff6b00, #ff8c00);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;flex-shrink:0;}
+.user-name{font-size:14px;color:#ffa500;font-weight:bold;white-space:nowrap;}
 .hero{text-align:center;padding:200px 20px 60px;}
 .hero h1{font-size:40px;margin-bottom:20px;color:#fff;text-shadow:0 0 5px #000,0 0 10px #fff,0 0 20px #ff8c00;animation:fadeIn 2s ease;}
 .hero p{font-size:18px;color:#ffa500;margin-bottom:30px;text-shadow:1px 1px 2px #000;animation:fadeIn 2s ease 0.5s;animation-fill-mode:both;}
@@ -369,7 +369,7 @@ async function register() {
             .from('users')
             .select('username')
             .eq('username', username)
-            .single();
+            .maybeSingle();
         
         if (existingUser) {
             errorDiv.innerHTML = '<div class="error-msg">Это имя пользователя уже занято!</div>';
@@ -390,15 +390,17 @@ async function register() {
             .insert([{
                 username: username,
                 email: email,
-                password: password, // В реальном проекте пароль хешируется на бэкенде
                 is_admin: false,
-                balance: 0
+                balance: 1000
             }]);
         
         if (dbError) throw dbError;
         
-        errorDiv.innerHTML = '<div class="success-msg">Регистрация успешна! Войдите в аккаунт.</div>';
-        setTimeout(() => switchModal('registerModal', 'loginModal'), 2000);
+        errorDiv.innerHTML = '<div class="success-msg">Регистрация успешна! Проверьте email для подтверждения или войдите.</div>';
+        setTimeout(() => {
+            closeModal('registerModal');
+            document.getElementById('loginEmail').value = email;
+        }, 2000);
         
     } catch (error) {
         errorDiv.innerHTML = `<div class="error-msg">${error.message}</div>`;
@@ -422,23 +424,29 @@ async function login() {
             password: password
         });
         
-        if (authError) throw authError;
+        if (authError) {
+            errorDiv.innerHTML = '<div class="error-msg">Неверный email или пароль!</div>';
+            return;
+        }
         
         const { data: userData, error: dbError } = await supabase
             .from('users')
             .select('*')
             .eq('email', email)
-            .single();
+            .maybeSingle();
         
-        if (dbError) throw dbError;
+        if (!userData) {
+            errorDiv.innerHTML = '<div class="error-msg">Пользователь не найден в базе!</div>';
+            return;
+        }
         
         currentUser = userData;
         closeModal('loginModal');
         showUserProfile();
-        errorDiv.innerHTML = '<div class="success-msg">Вход выполнен!</div>';
         
     } catch (error) {
-        errorDiv.innerHTML = '<div class="error-msg">Неверный email или пароль!</div>';
+        errorDiv.innerHTML = '<div class="error-msg">Ошибка входа! Попробуйте снова.</div>';
+        console.error(error);
     }
 }
 
