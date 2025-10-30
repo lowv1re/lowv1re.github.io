@@ -49,8 +49,8 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(255,255,255,0.4);background:#fff;}
 .footer{background:linear-gradient(90deg,#1a0a2e 0%,#2d1b4e 100%);padding:40px;text-align:center;border-top:3px solid #ff6b00;}
 .footer h3{color:#ff8c00;margin-bottom:20px;font-size:24px;}
-.contact{display:flex;justify-content:center;gap:20px;margin-top:20px;}
-.contact a{color:#ffa500;text-decoration:none;font-size:18px;padding:10px 25px;border:2px solid #ff6b00;border-radius:25px;transition:all 0.3s;}
+.contact{display:flex;justify-content:center;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.contact a{color:#ffa500;text-decoration:none;font-size:18px;padding:10px 25px;border:2px solid #ff6b00;border-radius:25px;transition:all 0.3s;display:inline-block;}
 .contact a:hover{background:#ff6b00;color:#000;transform:scale(1.1);}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;}
 .modal.active{display:flex;}
@@ -317,9 +317,10 @@ body::after{animation:none;}
 
 <div class="footer" id="contact">
 <h3 data-lang-text="🎃 Связаться со мной|🎃 Contact Me">🎃 Связаться со мной</h3>
-<p data-lang-text="Есть вопросы? Пиши в Telegram!|Questions? DM on Telegram!">Есть вопросы? Пиши в Telegram!</p>
+<p data-lang-text="Есть вопросы? Пиши в Telegram или на Email!|Questions? DM on Telegram or Email!">Есть вопросы? Пиши в Telegram или на Email!</p>
 <div class="contact">
 <a href="https://t.me/lowv1rre" target="_blank">📱 @lowv1rre</a>
+<a href="mailto:lowv1re1@gmail.com">📧 lowv1re1@gmail.com</a>
 </div>
 <p style="margin-top:30px;color:#888;font-size:14px;">© 2024 LOWV1RE. Все права защищены.</p>
 </div>
@@ -546,13 +547,21 @@ function updateLangText() {
 
 let lastScroll = 0;
 const header = document.getElementById('header');
+const HEADER_HIDE_POINT = 150;
+
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
-    if (currentScroll > 100) {
-        currentScroll > lastScroll ? header.classList.add('hidden') : header.classList.remove('hidden');
+    
+    if (currentScroll > HEADER_HIDE_POINT) {
+        // Скрываем когда листаем вниз
+        if (currentScroll > lastScroll) {
+            header.classList.add('hidden');
+        }
     } else {
+        // Показываем только когда вернулись к началу
         header.classList.remove('hidden');
     }
+    
     lastScroll = currentScroll;
 });
 </script>
