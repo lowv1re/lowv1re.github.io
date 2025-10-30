@@ -350,6 +350,7 @@ body::after{animation:none;}
 </div>
 </div>
 
+<!-- Модальное окно регистрации -->
 <div class="modal" id="registerModal">
 <div class="modal-content">
 <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
@@ -371,6 +372,23 @@ body::after{animation:none;}
 <div class="form-switch">
 <span data-lang-text="Уже есть аккаунт?|Already have an account?">Уже есть аккаунт?</span>
 <a onclick="switchModal('registerModal', 'loginModal')" data-lang-text="Войти|Login">Войти</a>
+</div>
+</div>
+</div>
+
+<div class="modal" id="verifyEmailModal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('verifyEmailModal')">&times;</span>
+<h2 class="modal-title" data-lang-text="Подтвердите email|Verify email">Подтвердите email</h2>
+<div id="verifyError"></div>
+<p style="text-align:center;color:#aaa;margin-bottom:20px;" data-lang-text="Мы отправили код на вашу почту|We sent a code to your email">Мы отправили код на вашу почту</p>
+<div class="form-group">
+<label data-lang-text="Код подтверждения (6 цифр)|Verification code (6 digits)">Код подтверждения (6 цифр)</label>
+<input type="text" id="verifyCode" placeholder="123456" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:5px;">
+</div>
+<button class="form-submit" onclick="verifyEmailCode()" data-lang-text="Подтвердить|Verify">Подтвердить</button>
+<div class="form-switch" style="margin-top:15px;">
+<a onclick="resendVerificationCode()" data-lang-text="Отправить код повторно|Resend code">Отправить код повторно</a>
 </div>
 </div>
 </div>
@@ -439,6 +457,7 @@ let currentUser = null;
 let currentLang = 'ru';
 let recoveryEmail = '';
 let verifiedCode = '';
+let pendingRegistration = null;
 
 window.addEventListener('load', async () => {
     await checkAuth();
@@ -494,32 +513,199 @@ async function register() {
     const email = document.getElementById('registerEmail').value.trim();
     const password = document.getElementById('registerPassword').value;
     const errorDiv = document.getElementById('registerError');
+    
     if (!username || !email || !password) {
         errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
         return;
     }
+    
     if (password.length < 6) {
         errorDiv.innerHTML = '<div class="error-msg">Пароль должен быть минимум 6 символов!</div>';
         return;
     }
+    
     try {
-        const { data: existingUser } = await supabase.from('users').select('username').eq('username', username).maybeSingle();
+        // Проверка существования username
+        const { data: existingUser } = await supabase
+            .from('users')
+            .select('username')
+            .eq('username', username)
+            .maybeSingle();
+        
         if (existingUser) {
             errorDiv.innerHTML = '<div class="error-msg">Это имя пользователя уже занято!</div>';
             return;
         }
-        const { data: authData, error: authError } = await supabase.auth.signUp({email: email, password: password});
-        if (authError) throw authError;
-        const { error: dbError } = await supabase.from('users').insert([{username: username, email: email, is_admin: false, balance: 1000}]);
-        if (dbError) throw dbError;
-        errorDiv.innerHTML = '<div class="success-msg">Регистрация успешна! Теперь войдите в аккаунт.</div>';
+        
+        // Проверка существования email
+        const { data: existingEmail } = await supabase
+            .from('users')
+            .select('email')
+            .eq('email', email)
+            .maybeSingle();
+        
+        if (existingEmail) {
+            errorDiv.innerHTML = '<div class="error-msg">Этот email уже зарегистрирован!</div>';
+            return;
+        }
+        
+        errorDiv.innerHTML = '<div class="success-msg">Отправка кода подтверждения...</div>';
+        
+        // Генерируем 6-значный код
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Сохраняем код в recovery_codes (переиспользуем таблицу)
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+        
+        await supabase.from('recovery_codes').delete().eq('email', email);
+        
+        const { error: codeError } = await supabase.from('recovery_codes').insert([{
+            email: email,
+            code: code,
+            expires_at: expiresAt.toISOString(),
+            used: false
+        }]);
+        
+        if (codeError) throw codeError;
+        
+        // Отправляем код на email
+        const { error: emailError } = await supabase.functions.invoke('send-recovery-code', {
+            body: { 
+                email: email, 
+                code: code,
+                subject: 'Подтверждение регистрации - LOWV1RE'
+            }
+        });
+        
+        if (emailError) throw emailError;
+        
+        // Сохраняем данные регистрации
+        pendingRegistration = { username, email, password };
+        
+        errorDiv.innerHTML = '<div class="success-msg">Код отправлен на вашу почту!</div>';
+        
         setTimeout(() => {
             closeModal('registerModal');
-            document.getElementById('loginEmail').value = email;
-            openModal('loginModal');
-        }, 2000);
+            openModal('verifyEmailModal');
+        }, 1500);
+        
     } catch (error) {
         errorDiv.innerHTML = `<div class="error-msg">${error.message}</div>`;
+    }
+}
+
+async function verifyEmailCode() {
+    const code = document.getElementById('verifyCode').value.trim();
+    const errorDiv = document.getElementById('verifyError');
+    
+    if (!code || code.length !== 6) {
+        errorDiv.innerHTML = '<div class="error-msg">Введите 6-значный код!</div>';
+        return;
+    }
+    
+    if (!pendingRegistration) {
+        errorDiv.innerHTML = '<div class="error-msg">Ошибка! Начните регистрацию заново.</div>';
+        return;
+    }
+    
+    try {
+        // Проверяем код
+        const { data: codeData, error } = await supabase
+            .from('recovery_codes')
+            .select('*')
+            .eq('email', pendingRegistration.email)
+            .eq('code', code)
+            .eq('used', false)
+            .maybeSingle();
+        
+        if (error || !codeData) {
+            errorDiv.innerHTML = '<div class="error-msg">Неверный код!</div>';
+            return;
+        }
+        
+        // Проверяем срок
+        const expiresAt = new Date(codeData.expires_at);
+        const now = new Date();
+        
+        if (now > expiresAt) {
+            errorDiv.innerHTML = '<div class="error-msg">Код истёк! Начните регистрацию заново.</div>';
+            return;
+        }
+        
+        errorDiv.innerHTML = '<div class="success-msg">Email подтверждён! Создание аккаунта...</div>';
+        
+        // Отмечаем код как использованный
+        await supabase.from('recovery_codes').update({ used: true }).eq('code', code);
+        
+        // Создаём аккаунт в Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: pendingRegistration.email,
+            password: pendingRegistration.password,
+            options: { emailRedirectTo: window.location.origin }
+        });
+        
+        if (authError) throw authError;
+        
+        // Добавляем в таблицу users
+        const { error: dbError } = await supabase.from('users').insert([{
+            username: pendingRegistration.username,
+            email: pendingRegistration.email,
+            is_admin: false,
+            balance: 1000
+        }]);
+        
+        if (dbError) throw dbError;
+        
+        errorDiv.innerHTML = '<div class="success-msg">Регистрация завершена! Войдите в аккаунт.</div>';
+        
+        setTimeout(() => {
+            closeModal('verifyEmailModal');
+            document.getElementById('loginEmail').value = pendingRegistration.email;
+            pendingRegistration = null;
+            openModal('loginModal');
+        }, 2000);
+        
+    } catch (error) {
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    }
+}
+
+async function resendVerificationCode() {
+    if (!pendingRegistration) {
+        alert('Ошибка! Начните регистрацию заново.');
+        return;
+    }
+    
+    const errorDiv = document.getElementById('verifyError');
+    errorDiv.innerHTML = '<div class="success-msg">Отправка нового кода...</div>';
+    
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    try {
+        await supabase.from('recovery_codes').delete().eq('email', pendingRegistration.email);
+        
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+        
+        await supabase.from('recovery_codes').insert([{
+            email: pendingRegistration.email,
+            code: code,
+            expires_at: expiresAt.toISOString(),
+            used: false
+        }]);
+        
+        await supabase.functions.invoke('send-recovery-code', {
+            body: { 
+                email: pendingRegistration.email, 
+                code: code,
+                subject: 'Подтверждение регистрации - LOWV1RE'
+            }
+        });
+        
+        errorDiv.innerHTML = '<div class="success-msg">Новый код отправлен!</div>';
+    } catch (error) {
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
     }
 }
 
