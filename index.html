@@ -404,12 +404,12 @@ body::after{animation:none;}
 <h2 class="modal-title" data-lang-text="Сброс пароля|Reset password">Сброс пароля</h2>
 <div id="resetError"></div>
 <div class="form-group">
-<label data-lang-text="Код из письма|Code from email">Код из письма (6 цифр)</label>
-<input type="text" id="resetCode" placeholder="123456" maxlength="6">
-</div>
-<div class="form-group">
 <label data-lang-text="Новый пароль|New password">Новый пароль</label>
 <input type="password" id="resetPassword" placeholder="••••••••">
+</div>
+<div class="form-group">
+<label data-lang-text="Повторите пароль|Repeat password">Повторите пароль</label>
+<input type="password" id="resetPasswordConfirm" placeholder="••••••••">
 </div>
 <button class="form-submit" onclick="resetPassword()" data-lang-text="Изменить пароль|Change password">Изменить пароль</button>
 </div>
