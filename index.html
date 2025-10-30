@@ -53,6 +53,17 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .contact a{color:#ffa500;text-decoration:none;font-size:18px;padding:10px 25px;border:2px solid #ff6b00;border-radius:25px;transition:all 0.3s;}
 .contact a:hover{background:#ff6b00;color:#000;transform:scale(1.1);}
 
+/* Тематические фоны */
+.card-brawl::before { background-image: url('https://wallpapers.com/images/hd/brawl-stars-background-iio2hzqp8ehgifsu.jpg'); border-color: #ce93d8; }
+.card-roblox::before { background-image: url('https://cdn.soft112.com/wallpapers-rblx-rblx-game-free-wallpapers/00/00/0H/E6/00000HE6J7/pad_screenshot.jpg'); border-color: #ff6b6b; }
+.card-csgo::before { background-image: url('https://i.pinimg.com/originals/ff/c3/8d/ffc38d9bce22d7a9eaa07b890e3af1a2.jpg'); border-color: #64b5f6; }
+.card-minecraft::before { background-image: url('https://i.imgur.com/hBmbDzq.png'); border-color: #81c784; }
+.card-valorant::before { background-image: url('https://i.imgur.com/mcrXKJK.png'); border-color: #ff4081; }
+.card-fortnite::before { background-image: url('https://i.imgur.com/ywRhvf8.jpeg'); border-color: #4dd0e1; }
+.card-genshin::before { background-image: url('https://i.imgur.com/V0tE4Jn.png'); border-color: #ffb74d; }
+.card-telegram::before { background-image: url('https://i.imgur.com/HKkL9G3.png'); border-color: #33bbff; }
+.card-steam::before { background-image: url('https://i.imgur.com/mjCsL5q.png'); border-color: #66c0f4; }
+
 /* Модальное окно */
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;}
 .modal.active{display:flex;}
@@ -139,144 +150,3 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 </div>
 <div>
 <div class="price-row">
-<div class="price-item"><div class="price-label">RUB</div><div class="price-value">200₽</div></div>
-<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.2</div></div>
-<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.0</div></div>
-</div>
-<button class="btn" onclick="buyProduct('CS:GO', 200)" data-lang-text="Купить|Buy">Купить</button>
-</div>
-</div>
-
-<!-- Minecraft -->
-<div class="game-card card-minecraft">
-<div>
-<div class="game-icon">⚔️</div>
-<h3 data-lang-text="Minecraft|Minecraft">Minecraft</h3>
-<p data-lang-text="Аккаунты, донат на сервера, привилегии|Accounts, server donations, perks">Аккаунты, донат на сервера, привилегии</p>
-</div>
-<div>
-<div class="price-row">
-<div class="price-item"><div class="price-label">RUB</div><div class="price-value">50₽</div></div>
-<div class="price-item"><div class="price-label">USD</div><div class="price-value">$0.5</div></div>
-<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.5</div></div>
-</div>
-<button class="btn" onclick="buyProduct('Minecraft', 50)" data-lang-text="Купить|Buy">Купить</button>
-</div>
-</div>
-
-<!-- Valorant -->
-<div class="game-card card-valorant">
-<div>
-<div class="game-icon">🎯</div>
-<h3 data-lang-text="Valorant|Valorant">Valorant</h3>
-<p data-lang-text="VP очки, скины оружия, прокачка|VP points, weapon skins, boosting">VP очки, скины оружия, прокачка</p>
-</div>
-<div>
-<div class="price-row">
-<div class="price-item"><div class="price-label">RUB</div><div class="price-value">300₽</div></div>
-<div class="price-item"><div class="price-label">USD</div><div class="price-value">$3.3</div></div>
-<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€3.0</div></div>
-</div>
-<button class="btn" onclick="buyProduct('Valorant', 300)" data-lang-text="Купить|Buy">Купить</button>
-</div>
-</div>
-
-<!-- Fortnite -->
-<div class="game-card card-fortnite">
-<div>
-<div class="game-icon">🏆</div>
-<h3 data-lang-text="Fortnite|Fortnite">Fortnite</h3>
-<p data-lang-text="V-Bucks, батл-пасс, эксклюзивные скины|V-Bucks, battle pass, exclusive skins">V-Bucks, батл-пасс, эксклюзивные скины</p>
-</div>
-<div>
-<div class="price-row">
-<div class="price-item"><div class="price-label">RUB</div><div class="price-value">250₽</div></div>
-<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.7</div></div>
-<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.5</div></div>
-</div>
-<button class="btn" onclick="buyProduct('Fortnite', 250)" data-lang-text="Купить|Buy">Купить</button>
-</div>
-</div>
-
-<!-- Genshin Impact -->
-<div class="game-card card-genshin">
-<div>
-<div class="game-icon">⚡</div>
-<h3 data-lang-text="Genshin Impact|Genshin Impact">Genshin Impact</h3>
-<p data-lang-text="Примогемы, аккаунты с персонажами|Primogems, character accounts">Примогемы, аккаунты с персонажами</p>
-</div>
-<div>
-<div class="price-row">
-<div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
-<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
-<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
-</div>
-<button class="btn" onclick="buyProduct('Genshin Impact', 100)" data-lang-text="Купить|Buy">Купить</button>
-</div>
-</div>
-
-</div>
-</div>
-
-<footer class="footer" id="contact">
-<h3 data-lang-text="Свяжитесь с нами|Contact Us">Свяжитесь с нами</h3>
-<div class="contact">
-<a href="mailto:contact@lowv1re.com">Email</a>
-<a href="https://t.me/lowv1re">Telegram</a>
-</div>
-</footer>
-
-<!-- Модальное окно -->
-<div class="modal" id="modal">
-<div class="modal-content">
-<span class="modal-close" id="modalClose">&times;</span>
-<h2 class="modal-title">Оформление покупки</h2>
-<form id="buyForm">
-<div class="form-group">
-<label>Имя</label>
-<input type="text" id="buyerName" required>
-</div>
-<div class="form-group">
-<label>Email</label>
-<input type="email" id="buyerEmail" required>
-</div>
-<div class="form-group">
-<label>Сумма</label>
-<input type="text" id="amount" readonly>
-</div>
-<button type="submit" class="form-submit">Купить</button>
-</form>
-</div>
-</div>
-
-<script>
-let selectedProduct = '';
-function buyProduct(name, price) {
-selectedProduct = name;
-document.getElementById('amount').value = price + '₽';
-document.getElementById('modal').classList.add('active');
-}
-
-document.getElementById('modalClose').addEventListener('click', () => {
-document.getElementById('modal').classList.remove('active');
-});
-
-document.getElementById('buyForm').addEventListener('submit', function(e){
-e.preventDefault();
-alert('Покупка ' + selectedProduct + ' оформлена на ' + document.getElementById('buyerName').value);
-document.getElementById('modal').classList.remove('active');
-});
-
-// Скрипт смены языка (RU/EN)
-const langSwitch = document.getElementById('langSwitch');
-let lang = 'ru';
-langSwitch.addEventListener('click', ()=>{
-lang = lang === 'ru' ? 'en' : 'ru';
-document.querySelectorAll('[data-lang-text]').forEach(el=>{
-let texts = el.getAttribute('data-lang-text').split('|');
-el.textContent = lang==='ru'?texts[0]:texts[1];
-});
-});
-</script>
-</body>
-</html>
