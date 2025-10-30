@@ -83,6 +83,43 @@
         .card-genshin::before {background-image:url('https://i.imgur.com/V0tE4Jn.png'); border-color:#ffb74d;}
         .card-telegram::before {background-image:url('https://i.imgur.com/HKkL9G3.png'); border-color:#33bbff;}
         .card-steam::before {background-image:url('https://i.imgur.com/mjCsL5q.png'); border-color:#66c0f4;}
+   @media (max-width:768px){
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 15px;
+        width: calc(100% - 30px);
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 15px;
+    }
+    .nav {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .lang-switch {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+    .hero {
+        padding: 160px 20px 60px;
+    }
+    .hero h1 {
+        font-size: 28px;
+        line-height: 1.3;
+    }
+    .hero p {
+        font-size: 16px;
+    }
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+    .price-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
     </style>
 </head>
 <body>
@@ -286,3 +323,4 @@ langSwitch.addEventListener('click',()=>{
 </script>
 </body>
 </html>
+
