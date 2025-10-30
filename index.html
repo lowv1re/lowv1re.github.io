@@ -344,6 +344,9 @@ body::after{animation:none;}
 <span data-lang-text="Нет аккаунта?|Don't have an account?">Нет аккаунта?</span>
 <a onclick="switchModal('loginModal', 'registerModal')" data-lang-text="Регистрация|Register">Регистрация</a>
 </div>
+<div class="form-switch" style="margin-top:10px;">
+<a onclick="switchModal('loginModal', 'forgotModal')" data-lang-text="Забыли пароль или имя?|Forgot password or username?">Забыли пароль или имя?</a>
+</div>
 </div>
 </div>
 
@@ -372,12 +375,53 @@ body::after{animation:none;}
 </div>
 </div>
 
+<div class="modal" id="forgotModal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('forgotModal')">&times;</span>
+<h2 class="modal-title" data-lang-text="Восстановление|Recovery">Восстановление</h2>
+<div id="forgotError"></div>
+<div class="form-group">
+<label data-lang-text="Что вы забыли?|What did you forget?">Что вы забыли?</label>
+<select id="forgotType" style="width:100%;padding:12px 15px;border:2px solid rgba(255,140,0,0.4);border-radius:15px;background:rgba(255,255,255,0.05);color:#fff;font-size:14px;">
+<option value="password" data-lang-text="Пароль|Password">Пароль</option>
+<option value="username" data-lang-text="Имя пользователя|Username">Имя пользователя</option>
+</select>
+</div>
+<div class="form-group">
+<label data-lang-text="Ваш Email|Your Email">Ваш Email</label>
+<input type="email" id="forgotEmail" placeholder="your@email.com">
+</div>
+<button class="form-submit" onclick="sendRecovery()" data-lang-text="Отправить код|Send code">Отправить код</button>
+<div class="form-switch">
+<a onclick="switchModal('forgotModal', 'loginModal')" data-lang-text="Назад ко входу|Back to login">Назад ко входу</a>
+</div>
+</div>
+</div>
+
+<div class="modal" id="resetModal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('resetModal')">&times;</span>
+<h2 class="modal-title" data-lang-text="Сброс пароля|Reset password">Сброс пароля</h2>
+<div id="resetError"></div>
+<div class="form-group">
+<label data-lang-text="Код из письма|Code from email">Код из письма (6 цифр)</label>
+<input type="text" id="resetCode" placeholder="123456" maxlength="6">
+</div>
+<div class="form-group">
+<label data-lang-text="Новый пароль|New password">Новый пароль</label>
+<input type="password" id="resetPassword" placeholder="••••••••">
+</div>
+<button class="form-submit" onclick="resetPassword()" data-lang-text="Изменить пароль|Change password">Изменить пароль</button>
+</div>
+</div>
+
 <script>
 const SUPABASE_URL = 'https://nbelgmhtxjjlfpqmkqbl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5iZWxnbWh0eGpqbGZwcW1rcWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDg2OTcsImV4cCI6MjA3NzQyNDY5N30.6snueQkGb7LorM_qhVNHdxUOC90FypoVzxllniwn70Q';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 let currentLang = 'ru';
+let recoveryEmail = '';
 
 window.addEventListener('load', async () => {
     await checkAuth();
@@ -530,6 +574,80 @@ async function buyProduct(productName, price) {
 function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
 function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
 function switchModal(from, to) { closeModal(from); openModal(to); }
+
+async function sendRecovery() {
+    const email = document.getElementById('forgotEmail').value.trim();
+    const type = document.getElementById('forgotType').value;
+    const errorDiv = document.getElementById('forgotError');
+    
+    if (!email) {
+        errorDiv.innerHTML = '<div class="error-msg">Введите email!</div>';
+        return;
+    }
+    
+    try {
+        const { data: userData } = await supabase.from('users').select('*').eq('email', email).maybeSingle();
+        
+        if (!userData) {
+            errorDiv.innerHTML = '<div class="error-msg">Пользователь с таким email не найден!</div>';
+            return;
+        }
+        
+        if (type === 'username') {
+            errorDiv.innerHTML = `<div class="success-msg">Ваше имя пользователя: <strong>${userData.username}</strong></div>`;
+            return;
+        }
+        
+        if (type === 'password') {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin
+            });
+            
+            if (error) throw error;
+            
+            recoveryEmail = email;
+            errorDiv.innerHTML = '<div class="success-msg">Письмо отправлено! Проверьте почту и следуйте инструкциям.</div>';
+            
+            setTimeout(() => {
+                closeModal('forgotModal');
+                openModal('resetModal');
+            }, 2000);
+        }
+    } catch (error) {
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    }
+}
+
+async function resetPassword() {
+    const code = document.getElementById('resetCode').value.trim();
+    const newPassword = document.getElementById('resetPassword').value;
+    const errorDiv = document.getElementById('resetError');
+    
+    if (!code || !newPassword) {
+        errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        errorDiv.innerHTML = '<div class="error-msg">Пароль должен быть минимум 6 символов!</div>';
+        return;
+    }
+    
+    try {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        
+        if (error) throw error;
+        
+        errorDiv.innerHTML = '<div class="success-msg">Пароль успешно изменен! Войдите с новым паролем.</div>';
+        
+        setTimeout(() => {
+            closeModal('resetModal');
+            openModal('loginModal');
+        }, 2000);
+    } catch (error) {
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    }
+}
 
 const langSwitch = document.getElementById('langSwitch');
 langSwitch.addEventListener('click', () => {
