@@ -289,7 +289,6 @@
             justify-content: center;
             gap: 20px;
             margin-top: 20px;
-            flex-wrap: wrap;
         }
 
         .contact a {
@@ -316,21 +315,30 @@
                 flex-direction: column;
                 gap: 10px;
             }
-            .nav {
-                gap: 15px;
-            }
         }
 
         /* Тематические фоны */
-        .card-brawl::before { background-image: url('https://wallpapers.com/images/hd/brawl-stars-background-iio2hzqp8ehgifsu.jpg'); border-color: #ce93d8; }
-        .card-roblox::before { background-image: url('https://cdn.soft112.com/wallpapers-rblx-rblx-game-free-wallpapers/00/00/0H/E6/00000HE6J7/pad_screenshot.jpg'); border-color: #ff6b6b; }
-        .card-csgo::before { background-image: url('https://i.pinimg.com/originals/ff/c3/8d/ffc38d9bce22d7a9eaa07b890e3af1a2.jpg'); border-color: #64b5f6; }
-        .card-minecraft::before { background-image: url('https://wallpapercave.com/wp/wp2752466.jpg'); border-color: #81c784; }
-        .card-valorant::before { background-image: url('https://wallpaperaccess.com/full/3720647.jpg'); border-color: #ff4081; }
-        .card-fortnite::before { background-image: url('https://wallpaperaccess.com/full/1107730.jpg'); border-color: #4dd0e1; }
-        .card-genshin::before { background-image: url('https://wallpapers.com/images/hd/genshin-impact-1-2jml7e9rpb3ekqj2.jpg'); border-color: #ffb74d; }
-        .card-telegram::before { background-image: url('https://i.pinimg.com/originals/68/f4/6b/68f46bc6747b5e9d96b73e3efbba9a7d.png'); border-color: #33bbff; }
-        .card-steam::before { background-image: url('https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&q=80'); border-color: #66c0f4; }
+        .card-brawl::before {
+            background-image: url('https://wallpapers.com/images/hd/brawl-stars-background-iio2hzqp8ehgifsu.jpg');
+            border-color: #ce93d8;
+        }
+
+        .card-roblox::before {
+            background-image: url('https://cdn.soft112.com/wallpapers-rblx-rblx-game-free-wallpapers/00/00/0H/E6/00000HE6J7/pad_screenshot.jpg');
+            border-color: #ff6b6b;
+        }
+
+        .card-csgo::before {
+            background-image: url('https://i.pinimg.com/originals/ff/c3/8d/ffc38d9bce22d7a9eaa07b890e3af1a2.jpg');
+            border-color: #64b5f6;
+        }
+
+.card-minecraft::before { background-image: url('https://i.imgur.com/hBmbDzq.png'); border-color: #81c784; }
+        .card-valorant::before { background-image: url('https://i.imgur.com/mcrXKJK.png'); border-color: #ff4081; }
+        .card-fortnite::before { background-image: url('https://i.imgur.com/ywRhvf8.jpeg'); border-color: #4dd0e1; }
+        .card-genshin::before { background-image: url('https://i.imgur.com/V0tE4Jn.png'); border-color: #ffb74d; }
+        .card-telegram::before { background-image: url('https://i.imgur.com/HKkL9G3.png'); border-color: #33bbff; }
+        .card-steam::before { background-image: url('https://i.imgur.com/mjCsL5q.png'); border-color: #66c0f4; }
     </style>
 </head>
 <body>
@@ -352,7 +360,6 @@
         <div class="container" id="games">
             <h2 class="section-title">🎮 Популярные игры</h2>
             <div class="games-grid">
-
                 <!-- Brawl Stars -->
                 <div class="game-card card-brawl">
                     <div>
@@ -362,8 +369,261 @@
                     </div>
                     <div>
                         <div class="price-row">
-                            <div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
-                            <div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
-                            <div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">100₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$1.1</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€1.0</div>
+                            </div>
                         </div>
-                        <button class
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- Roblox -->
+                <div class="game-card card-roblox">
+                    <div>
+                        <div class="game-icon">🎮</div>
+                        <h3>Roblox</h3>
+                        <p>Robux, игровые валюты, премиум</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">150₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$1.6</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€1.5</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- CS:GO -->
+                <div class="game-card card-csgo">
+                    <div>
+                        <div class="game-icon">🔫</div>
+                        <h3>CS:GO</h3>
+                        <p>Скины, аккаунты, буст рейтинга</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">200₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$2.2</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€2.0</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- Minecraft -->
+                <div class="game-card card-minecraft">
+                    <div>
+                        <div class="game-icon">⚔️</div>
+                        <h3>Minecraft</h3>
+                        <p>Аккаунты, донат на сервера, привилегии</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">50₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$0.5</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€0.5</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- Valorant -->
+                <div class="game-card card-valorant">
+                    <div>
+                        <div class="game-icon">🎯</div>
+                        <h3>Valorant</h3>
+                        <p>VP очки, скины оружия, прокачка</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">300₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$3.3</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€3.0</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- Fortnite -->
+                <div class="game-card card-fortnite">
+                    <div>
+                        <div class="game-icon">🏆</div>
+                        <h3>Fortnite</h3>
+                        <p>V-Bucks, батл-пасс, эксклюзивные скины</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">250₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$2.7</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€2.5</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- Genshin Impact -->
+                <div class="game-card card-genshin">
+                    <div>
+                        <div class="game-icon">⚡</div>
+                        <h3>Genshin Impact</h3>
+                        <p>Примогемы, аккаунты с персонажами</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">100₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$1.1</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€1.0</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- Telegram Stars -->
+                <div class="game-card card-telegram">
+                    <div>
+                        <div class="game-icon">⭐</div>
+                        <h3>Telegram Stars</h3>
+                        <p>Звезды для донатов и подписок</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">80₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$0.9</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€0.8</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+                <!-- Steam -->
+                <div class="game-card card-steam">
+                    <div>
+                        <div class="game-icon">🎮</div>
+                        <h3>Steam</h3>
+                        <p>Пополнение кошелька, игры, подарки</p>
+                    </div>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-item">
+                                <div class="price-label">RUB</div>
+                                <div class="price-value">100₽</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">USD</div>
+                                <div class="price-value">$1.1</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">EUR</div>
+                                <div class="price-value">€1.0</div>
+                            </div>
+                        </div>
+                        <button class="btn">Купить</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer" id="contact">
+            <h3>🎃 Связаться со мной</h3>
+            <p>Есть вопросы? Пиши в Telegram!</p>
+            <div class="contact">
+                <a href="https://t.me/lowv1rre" target="_blank">📱 @lowv1rre</a>
+            </div>
+            <p style="margin-top: 30px; color: #888; font-size: 14px;">© 2024 LOWV1RE. Все права защищены.</p>
+        </div>
+    </div>
+
+    <script>
+        let lastScroll = 0;
+        const header = document.getElementById('header');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > 100) {
+                if (currentScroll > lastScroll) {
+                    header.classList.add('hidden');
+                } else {
+                    header.classList.remove('hidden');
+                }
+            } else {
+                header.classList.remove('hidden');
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
