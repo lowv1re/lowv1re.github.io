@@ -23,9 +23,9 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .lang-switch:hover{background:rgba(255,140,0,0.1);color:#ff8c00;}
 .auth-btn{background:linear-gradient(135deg, #ff6b00, #ff8c00);color:#fff;border:none;padding:8px 20px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:14px;transition:all 0.3s;box-shadow:0 4px 15px rgba(255,107,0,0.4);}
 .auth-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(255,107,0,0.6);}
-.user-info{display:flex;align-items:center;gap:10px;padding:5px 15px;background:rgba(255,140,0,0.1);border-radius:20px;border:2px solid rgba(255,140,0,0.4);cursor:pointer;}
-.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg, #ff6b00, #ff8c00);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;flex-shrink:0;}
-.user-name{font-size:14px;color:#ffa500;font-weight:bold;white-space:nowrap;}
+.user-info{display:flex;align-items:center;gap:10px;padding:5px 15px;background:rgba(255,140,0,0.1);border-radius:20px;border:2px solid rgba(255,140,0,0.4);}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg, #ff6b00, #ff8c00);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;}
+.user-name{font-size:14px;color:#ffa500;font-weight:bold;}
 .hero{text-align:center;padding:200px 20px 60px;}
 .hero h1{font-size:40px;margin-bottom:20px;color:#fff;text-shadow:0 0 5px #000,0 0 10px #fff,0 0 20px #ff8c00;animation:fadeIn 2s ease;}
 .hero p{font-size:18px;color:#ffa500;margin-bottom:30px;text-shadow:1px 1px 2px #000;animation:fadeIn 2s ease 0.5s;animation-fill-mode:both;}
@@ -53,17 +53,6 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .contact a{color:#ffa500;text-decoration:none;font-size:18px;padding:10px 25px;border:2px solid #ff6b00;border-radius:25px;transition:all 0.3s;}
 .contact a:hover{background:#ff6b00;color:#000;transform:scale(1.1);}
 
-/* Тематические фоны */
-.card-brawl::before { background-image: url('https://wallpapers.com/images/hd/brawl-stars-background-iio2hzqp8ehgifsu.jpg'); border-color: #ce93d8; }
-.card-roblox::before { background-image: url('https://cdn.soft112.com/wallpapers-rblx-rblx-game-free-wallpapers/00/00/0H/E6/00000HE6J7/pad_screenshot.jpg'); border-color: #ff6b6b; }
-.card-csgo::before { background-image: url('https://i.pinimg.com/originals/ff/c3/8d/ffc38d9bce22d7a9eaa07b890e3af1a2.jpg'); border-color: #64b5f6; }
-.card-minecraft::before { background-image: url('https://i.imgur.com/hBmbDzq.png'); border-color: #81c784; }
-.card-valorant::before { background-image: url('https://i.imgur.com/mcrXKJK.png'); border-color: #ff4081; }
-.card-fortnite::before { background-image: url('https://i.imgur.com/ywRhvf8.jpeg'); border-color: #4dd0e1; }
-.card-genshin::before { background-image: url('https://i.imgur.com/V0tE4Jn.png'); border-color: #ffb74d; }
-.card-telegram::before { background-image: url('https://i.imgur.com/HKkL9G3.png'); border-color: #33bbff; }
-.card-steam::before { background-image: url('https://i.imgur.com/mjCsL5q.png'); border-color: #66c0f4; }
-
 /* Модальное окно */
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;}
 .modal.active{display:flex;}
@@ -77,35 +66,104 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .form-group input{width:100%;padding:12px 15px;border:2px solid rgba(255,140,0,0.4);border-radius:15px;background:rgba(255,255,255,0.05);color:#fff;font-size:14px;transition:all 0.3s;}
 .form-group input:focus{outline:none;border-color:#ff8c00;background:rgba(255,255,255,0.1);box-shadow:0 0 15px rgba(255,140,0,0.3);}
 .form-submit{background:linear-gradient(135deg, #ff6b00, #ff8c00);color:#fff;border:none;padding:14px;border-radius:20px;font-weight:bold;cursor:pointer;width:100%;font-size:16px;transition:all 0.3s;margin-top:10px;box-shadow:0 4px 15px rgba(255,107,0,0.4);}
-.form-submit:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(255,140,0,0.6);}
+.form-submit:hover{transform:scale(1.02);box-shadow:0 6px 20px rgba(255,107,0,0.6);}
+.form-switch{text-align:center;margin-top:20px;color:#aaa;font-size:14px;}
+.form-switch a{color:#ff8c00;cursor:pointer;text-decoration:underline;}
+.form-switch a:hover{color:#ffa500;}
+.error-msg{background:rgba(255,0,0,0.2);border:2px solid #ff4444;color:#ff6666;padding:10px 15px;border-radius:10px;margin-bottom:15px;font-size:13px;text-align:center;}
+.success-msg{background:rgba(0,255,0,0.2);border:2px solid #44ff44;color:#66ff66;padding:10px 15px;border-radius:10px;margin-bottom:15px;font-size:13px;text-align:center;}
+
+/* Профиль */
+.profile-section{background:linear-gradient(135deg, rgba(26,10,46,0.9), rgba(45,27,78,0.9));padding:40px;border-radius:25px;max-width:800px;margin:0 auto 40px;border:3px solid #ff6b00;box-shadow:0 10px 30px rgba(0,0,0,0.6);}
+.profile-header{display:flex;align-items:center;gap:30px;margin-bottom:30px;flex-wrap:wrap;}
+.profile-avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg, #ff6b00, #ff8c00);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:bold;border:4px solid rgba(255,140,0,0.6);box-shadow:0 5px 20px rgba(255,107,0,0.5);}
+.profile-info h2{color:#ff8c00;font-size:32px;margin-bottom:10px;text-shadow:0 0 15px rgba(255,140,0,0.5);}
+.profile-info p{color:#aaa;font-size:14px;}
+.profile-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:30px;}
+.stat-box{background:rgba(0,0,0,0.4);padding:20px;border-radius:15px;border:2px solid rgba(255,140,0,0.3);text-align:center;}
+.stat-label{color:#aaa;font-size:12px;margin-bottom:8px;}
+.stat-value{color:#00ff88;font-size:24px;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.5);}
+.logout-btn{background:rgba(255,0,0,0.2);border:2px solid #ff4444;color:#ff6666;padding:10px 25px;border-radius:20px;font-weight:bold;cursor:pointer;transition:all 0.3s;margin-top:20px;}
+.logout-btn:hover{background:rgba(255,0,0,0.4);transform:scale(1.05);}
+
+@media(max-width:768px){
+.header{flex-direction:column;align-items:flex-start;padding:15px 15px;width:calc(100% - 30px);}
+.nav-lang{flex-direction:column;align-items:flex-start;gap:10px;width:100%;}
+.nav{flex-wrap:wrap;gap:10px;}
+.hero{padding:180px 20px 60px;}
+.hero h1{font-size:28px;}
+.hero p{font-size:16px;}
+.games-grid{grid-template-columns:1fr;}
+.price-row{flex-direction:column;gap:10px;}
+.modal-content{padding:30px 20px;}
+.profile-header{flex-direction:column;align-items:center;text-align:center;}
+}
+
+/* карточки игр */
+.card-brawl{border-color:#ce93d8;}.card-brawl::before{background-image:url('https://wallpapers.com/images/hd/brawl-stars-background-iio2hzqp8ehgifsu.jpg');}
+.card-roblox{border-color:#ff6b6b;}.card-roblox::before{background-image:url('https://cdn.soft112.com/wallpapers-rblx-rblx-game-free-wallpapers/00/00/0H/E6/00000HE6J7/pad_screenshot.jpg');}
+.card-csgo{border-color:#64b5f6;}.card-csgo::before{background-image:url('https://i.pinimg.com/originals/ff/c3/8d/ffc38d9bce22d7a9eaa07b890e3af1a2.jpg');}
+.card-minecraft{border-color:#81c784;}.card-minecraft::before{background-image:url('https://i.imgur.com/hBmbDzq.png');}
+.card-valorant{border-color:#ff4081;}.card-valorant::before{background-image:url('https://i.imgur.com/mcrXKJK.png');}
+.card-fortnite{border-color:#4dd0e1;}.card-fortnite::before{background-image:url('https://i.imgur.com/ywRhvf8.jpeg');}
+.card-genshin{border-color:#ffb74d;}.card-genshin::before{background-image:url('https://i.imgur.com/V0tE4Jn.png');}
+.card-telegram{border-color:#33bbff;}.card-telegram::before{background-image:url('https://i.imgur.com/HKkL9G3.png');}
+.card-steam{border-color:#66c0f4;}.card-steam::before{background-image:url('https://i.imgur.com/mjCsL5q.png');}
 </style>
 </head>
 <body>
 <div class="content-wrapper">
-<header class="header" id="header">
-<div class="logo">LOWV1RE</div>
+<div class="header" id="header">
+<div class="logo" onclick="window.location.reload()">🎃 LOWV1RE</div>
 <div class="nav-lang">
 <div class="nav">
 <a href="#games" data-lang-text="Игры|Games">Игры</a>
-<a href="#about" data-lang-text="О нас|About">О нас</a>
+<a href="#services" data-lang-text="Услуги|Services">Услуги</a>
 <a href="#contact" data-lang-text="Контакты|Contact">Контакты</a>
+<div id="authSection"></div>
 </div>
-<button class="lang-switch" id="langSwitch" data-lang-text="EN|RU">EN</button>
+<div class="lang-switch" id="langSwitch">RU</div>
 </div>
-<button class="auth-btn" id="authBtn" data-lang-text="Войти|Login">Войти</button>
-<div class="user-info" id="userInfo" style="display:none;">
-<div class="user-avatar" id="userAvatar">A</div>
-<div class="user-name" id="userName">Alex</div>
 </div>
-</header>
 
-<section class="hero">
-<h1 data-lang-text="Добро пожаловать в LOWV1RE|Welcome to LOWV1RE">Добро пожаловать в LOWV1RE</h1>
-<p data-lang-text="Лучшие игровые товары и услуги|Best gaming products and services">Лучшие игровые товары и услуги</p>
-</section>
+<div class="hero">
+<h1 id="heroTitle" data-lang-text="LOWV1RE MARKET<br>Донат. Аккаунты. Прокачка. Всё под твоим контролем.|LOWV1RE MARKET<br>Donations. Accounts. Boosting. Everything under your control.">LOWV1RE MARKET<br>Донат. Аккаунты. Прокачка. Всё под твоим контролем.</h1>
+<p id="heroDesc" data-lang-text="Прокачка, донат, услуги для любимых игр!|Boosting, donations, services for your favorite games!">Прокачка, донат, услуги для любимых игр!</p>
+</div>
 
+<!-- Профиль пользователя -->
+<div id="profileSection" style="display:none;">
 <div class="container">
-<h2 class="section-title" id="games">Игры</h2>
+<div class="profile-section">
+<div class="profile-header">
+<div class="profile-avatar" id="profileAvatar">U</div>
+<div class="profile-info">
+<h2 id="profileUsername">Username</h2>
+<p id="profileEmail">email@example.com</p>
+<p id="profileUrl" style="color:#ff8c00; margin-top:5px; font-size:16px;">lowv1re.eu/user1</p>
+</div>
+</div>
+<div class="profile-stats">
+<div class="stat-box">
+<div class="stat-label" data-lang-text="Баланс|Balance">Баланс</div>
+<div class="stat-value" id="profileBalance">0₽</div>
+</div>
+<div class="stat-box">
+<div class="stat-label" data-lang-text="Заказов|Orders">Заказов</div>
+<div class="stat-value" id="profileOrders">0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label" data-lang-text="Дата регистрации|Registered">Дата регистрации</div>
+<div class="stat-value" id="profileDate" style="font-size:14px;">--</div>
+</div>
+</div>
+<button class="logout-btn" onclick="logout()" data-lang-text="Выйти|Logout">Выйти</button>
+</div>
+</div>
+</div>
+
+<div class="container" id="games">
+<h2 class="section-title" data-lang-text="🎮 Популярные игры|🎮 Popular Games">🎮 Популярные игры</h2>
 <div class="games-grid">
 <!-- Brawl Stars -->
 <div class="game-card card-brawl">
@@ -117,8 +175,8 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 <div>
 <div class="price-row">
 <div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
-<div class="price-item"><div class="price-label">USD</div><div class="price-value">$0.9</div></div>
-<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.8</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
 </div>
 <button class="btn" onclick="buyProduct('Brawl Stars', 100)" data-lang-text="Купить|Buy">Купить</button>
 </div>
@@ -128,7 +186,7 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 <div class="game-card card-roblox">
 <div>
 <div class="game-icon">🎮</div>
-<h3 data-lang-text="Roblox|Roblox">Roblox</h3>
+<h3>Roblox</h3>
 <p data-lang-text="Robux, игровые валюты, премиум|Robux, game currency, premium">Robux, игровые валюты, премиум</p>
 </div>
 <div>
@@ -145,8 +203,98 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 <div class="game-card card-csgo">
 <div>
 <div class="game-icon">🔫</div>
-<h3 data-lang-text="CS:GO|CS:GO">CS:GO</h3>
+<h3>CS:GO</h3>
 <p data-lang-text="Скины, аккаунты, буст рейтинга|Skins, accounts, rank boost">Скины, аккаунты, буст рейтинга</p>
 </div>
 <div>
 <div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">200₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.2</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.0</div></div>
+</div>
+<button class="btn" onclick="buyProduct('CS:GO', 200)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Minecraft -->
+<div class="game-card card-minecraft">
+<div>
+<div class="game-icon">⚔️</div>
+<h3>Minecraft</h3>
+<p data-lang-text="Аккаунты, донат на сервера, привилегии|Accounts, server donations, perks">Аккаунты, донат на сервера, привилегии</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">50₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$0.5</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.5</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Minecraft', 50)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Valorant -->
+<div class="game-card card-valorant">
+<div>
+<div class="game-icon">🎯</div>
+<h3>Valorant</h3>
+<p data-lang-text="VP очки, скины оружия, прокачка|VP points, weapon skins, boosting">VP очки, скины оружия, прокачка</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">300₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$3.3</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€3.0</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Valorant', 300)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Fortnite -->
+<div class="game-card card-fortnite">
+<div>
+<div class="game-icon">🏆</div>
+<h3>Fortnite</h3>
+<p data-lang-text="V-Bucks, батл-пасс, эксклюзивные скины|V-Bucks, battle pass, exclusive skins">V-Bucks, батл-пасс, эксклюзивные скины</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">250₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.7</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.5</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Fortnite', 250)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Genshin Impact -->
+<div class="game-card card-genshin">
+<div>
+<div class="game-icon">⚡</div>
+<h3>Genshin Impact</h3>
+<p data-lang-text="Примогемы, аккаунты с персонажами|Primogems, character accounts">Примогемы, аккаунты с персонажами</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Genshin Impact', 100)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Telegram Stars -->
+<div class="game-card card-telegram">
+<div>
+<div class="game-icon">⭐</div>
+<h3>Telegram Stars</h3>
+<p data-lang-text="Звезды для донатов и подписок|Stars for donations and subscriptions">Звезды для донатов и подписок</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">80₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$0.9</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.8</div></div>
+</div>
+<button class="btn" onclick="buyProduct('
