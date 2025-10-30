@@ -46,6 +46,16 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .contact a{color:#ffa500;text-decoration:none;font-size:18px;padding:10px 25px;border:2px solid #ff6b00;border-radius:25px;transition:all 0.3s;}
 .contact a:hover{background:#ff6b00;color:#000;transform:scale(1.1);}
 @media(max-width:768px){.header{flex-direction:column;align-items:flex-start;padding:15px 15px;width:calc(100%-30px);left:50%;transform:translateX(-50%);border-radius:15px;}.nav-lang{flex-direction:column;align-items:flex-start;gap:5px;}.nav{flex-wrap:wrap;gap:10px;margin-top:0;}.hero{padding:200px 20px 60px;}.hero h1{font-size:28px;line-height:1.3;}.hero p{font-size:16px;}.games-grid{grid-template-columns:1fr;}.price-row{flex-direction:column;gap:10px;}}
+/* карточки игр */
+.card-brawl::before{background-image:url('https://wallpapers.com/images/hd/brawl-stars-background-iio2hzqp8ehgifsu.jpg');border-color:#ce93d8;}
+.card-roblox::before{background-image:url('https://cdn.soft112.com/wallpapers-rblx-rblx-game-free-wallpapers/00/00/0H/E6/00000HE6J7/pad_screenshot.jpg');border-color:#ff6b6b;}
+.card-csgo::before{background-image:url('https://i.pinimg.com/originals/ff/c3/8d/ffc38d9bce22d7a9eaa07b890e3af1a2.jpg');border-color:#64b5f6;}
+.card-minecraft::before{background-image:url('https://i.imgur.com/hBmbDzq.png');border-color:#81c784;}
+.card-valorant::before{background-image:url('https://i.imgur.com/mcrXKJK.png');border-color:#ff4081;}
+.card-fortnite::before{background-image:url('https://i.imgur.com/ywRhvf8.jpeg');border-color:#4dd0e1;}
+.card-genshin::before{background-image:url('https://i.imgur.com/V0tE4Jn.png');border-color:#ffb74d;}
+.card-telegram::before{background-image:url('https://i.imgur.com/HKkL9G3.png');border-color:#33bbff;}
+.card-steam::before{background-image:url('https://i.imgur.com/mjCsL5q.png');border-color:#66c0f4;}
 </style>
 </head>
 <body>
@@ -70,7 +80,159 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 <div class="container" id="games">
 <h2 class="section-title" data-lang-text="Популярные игры|Popular Games">🎮 Популярные игры</h2>
 <div class="games-grid">
-<!-- Здесь вставляешь все карточки игр с data-lang-text -->
+<!-- Brawl Stars -->
+<div class="game-card card-brawl">
+<div>
+<div class="game-icon">⭐</div>
+<h3 data-lang-text="Brawl Stars|Brawl Stars">Brawl Stars</h3>
+<p data-lang-text="Гемы, аккаунты, прокачка персонажей|Gems, accounts, character boost">Гемы, аккаунты, прокачка персонажей</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Roblox -->
+<div class="game-card card-roblox">
+<div>
+<div class="game-icon">🎮</div>
+<h3 data-lang-text="Roblox|Roblox">Roblox</h3>
+<p data-lang-text="Robux, игровые валюты, премиум|Robux, game currency, premium">Robux, игровые валюты, премиум</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">150₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.6</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.5</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- CS:GO -->
+<div class="game-card card-csgo">
+<div>
+<div class="game-icon">🔫</div>
+<h3 data-lang-text="CS:GO|CS:GO">CS:GO</h3>
+<p data-lang-text="Скины, аккаунты, буст рейтинга|Skins, accounts, rank boost">Скины, аккаунты, буст рейтинга</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">200₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.2</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.0</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Minecraft -->
+<div class="game-card card-minecraft">
+<div>
+<div class="game-icon">⚔️</div>
+<h3 data-lang-text="Minecraft|Minecraft">Minecraft</h3>
+<p data-lang-text="Аккаунты, донат на сервера, привилегии|Accounts, server donations, perks">Аккаунты, донат на сервера, привилегии</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">50₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$0.5</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.5</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Valorant -->
+<div class="game-card card-valorant">
+<div>
+<div class="game-icon">🎯</div>
+<h3 data-lang-text="Valorant|Valorant">Valorant</h3>
+<p data-lang-text="VP очки, скины оружия, прокачка|VP points, weapon skins, boosting">VP очки, скины оружия, прокачка</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">300₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$3.3</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€3.0</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Fortnite -->
+<div class="game-card card-fortnite">
+<div>
+<div class="game-icon">🏆</div>
+<h3 data-lang-text="Fortnite|Fortnite">Fortnite</h3>
+<p data-lang-text="V-Bucks, батл-пасс, эксклюзивные скины|V-Bucks, battle pass, exclusive skins">V-Bucks, батл-пасс, эксклюзивные скины</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">250₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.7</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.5</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Genshin Impact -->
+<div class="game-card card-genshin">
+<div>
+<div class="game-icon">⚡</div>
+<h3 data-lang-text="Genshin Impact|Genshin Impact">Genshin Impact</h3>
+<p data-lang-text="Примогемы, аккаунты с персонажами|Primogems, character accounts">Примогемы, аккаунты с персонажами</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Telegram Stars -->
+<div class="game-card card-telegram">
+<div>
+<div class="game-icon">⭐</div>
+<h3 data-lang-text="Telegram Stars|Telegram Stars">Telegram Stars</h3>
+<p data-lang-text="Звезды для донатов и подписок|Stars for donations and subscriptions">Звезды для донатов и подписок</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">80₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$0.9</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.8</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Steam -->
+<div class="game-card card-steam">
+<div>
+<div class="game-icon">🎮</div>
+<h3 data-lang-text="Steam|Steam">Steam</h3>
+<p data-lang-text="Пополнение кошелька, игры, подарки|Wallet top-up, games, gifts">Пополнение кошелька, игры, подарки</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
+</div>
+<button class="btn" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -80,15 +242,15 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 <div class="contact">
 <a href="https://t.me/lowv1rre" target="_blank">📱 @lowv1rre</a>
 </div>
-<p style="margin-top:30px;color:#888;font-size:14px;" data-lang-text="© 2024 LOWV1RE. Все права защищены.|© 2024 LOWV1RE. All rights reserved.">© 2024 LOWV1RE. Все права защищены.</p>
+<p style="margin-top:30px;color:#888;font-size:14px;">© 2024 LOWV1RE. Все права защищены.</p>
 </div>
 </div>
 
 <script>
-let lastScroll=0;
-const header=document.getElementById('header');
-window.addEventListener('scroll',()=>{
-    const currentScroll=window.pageYOffset;
+let lastScroll = 0;
+const header = document.getElementById('header');
+window.addEventListener('scroll', ()=>{
+    const currentScroll = window.pageYOffset;
     if(currentScroll>100){currentScroll>lastScroll?header.classList.add('hidden'):header.classList.remove('hidden');}
     else header.classList.remove('hidden');
     lastScroll=currentScroll;
