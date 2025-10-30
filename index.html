@@ -185,7 +185,385 @@ body::after{animation:none;}
 <div>
 <div class="price-row">
 <div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$0.9</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.8</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Telegram Stars', 80)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<!-- Steam -->
+<div class="game-card card-steam">
+<div>
+<div class="game-icon">🎮</div>
+<h3 data-lang-text="Steam|Steam">Steam</h3>
+<p data-lang-text="Пополнение кошелька, игры, подарки|Wallet top-up, games, gifts">Пополнение кошелька, игры, подарки</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">100₽</div></div>
 <div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.1</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Steam', 100)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="footer" id="contact">
+<h3 data-lang-text="🎃 Связаться со мной|🎃 Contact Me">🎃 Связаться со мной</h3>
+<p data-lang-text="Есть вопросы? Пиши в Telegram!|Questions? DM on Telegram!">Есть вопросы? Пиши в Telegram!</p>
+<div class="contact">
+<a href="https://t.me/lowv1rre" target="_blank">📱 @lowv1rre</a>
+</div>
+<p style="margin-top:30px;color:#888;font-size:14px;">© 2024 LOWV1RE. Все права защищены.</p>
+</div>
+</div>
+
+<!-- Модальное окно входа -->
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
+<h2 class="modal-title" data-lang-text="Вход в аккаунт|Login">Вход в аккаунт</h2>
+<div id="loginError"></div>
+<div class="form-group">
+<label data-lang-text="Email|Email">Email</label>
+<input type="email" id="loginEmail" placeholder="your@email.com">
+</div>
+<div class="form-group">
+<label data-lang-text="Пароль|Password">Пароль</label>
+<input type="password" id="loginPassword" placeholder="••••••••">
+</div>
+<button class="form-submit" onclick="login()" data-lang-text="Войти|Login">Войти</button>
+<div class="form-switch">
+<span data-lang-text="Нет аккаунта?|Don't have an account?">Нет аккаунта?</span>
+<a onclick="switchModal('loginModal', 'registerModal')" data-lang-text="Регистрация|Register">Регистрация</a>
+</div>
+</div>
+</div>
+
+<!-- Модальное окно регистрации -->
+<div class="modal" id="registerModal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
+<h2 class="modal-title" data-lang-text="Регистрация|Registration">Регистрация</h2>
+<div id="registerError"></div>
+<div class="form-group">
+<label data-lang-text="Имя пользователя|Username">Имя пользователя</label>
+<input type="text" id="registerUsername" placeholder="username">
+</div>
+<div class="form-group">
+<label data-lang-text="Email|Email">Email</label>
+<input type="email" id="registerEmail" placeholder="your@email.com">
+</div>
+<div class="form-group">
+<label data-lang-text="Пароль|Password">Пароль</label>
+<input type="password" id="registerPassword" placeholder="••••••••">
+</div>
+<button class="form-submit" onclick="register()" data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</button>
+<div class="form-switch">
+<span data-lang-text="Уже есть аккаунт?|Already have an account?">Уже есть аккаунт?</span>
+<a onclick="switchModal('registerModal', 'loginModal')" data-lang-text="Войти|Login">Войти</a>
+</div>
+</div>
+</div>
+
+<script>
+// Инициализация Supabase
+const SUPABASE_URL = 'https://nbelgmhtxjjlfpqmkqbl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5iZWxnbWh0eGpqbGZwcW1rcWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDg2OTcsImV4cCI6MjA3NzQyNDY5N30.6snueQkGb7LorM_qhVNHdxUOC90FypoVzxllniwn70Q';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentLang = 'ru';
+
+// Проверка авторизации при загрузке
+window.addEventListener('load', async () => {
+    await checkAuth();
+    updateLangText();
+});
+
+// Проверка авторизации
+async function checkAuth() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+        const { data: userData } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', user.email)
+            .maybeSingle();
+        
+        if (userData) {
+            currentUser = userData;
+            showUserProfile();
+        }
+    } else {
+        showAuthButton();
+    }
+}
+
+// Показать кнопку входа
+function showAuthButton() {
+    document.getElementById('authSection').innerHTML = `
+        <button class="auth-btn" onclick="openModal('loginModal')" data-lang-text="Войти|Login">Войти</button>
+    `;
+    document.getElementById('profileSection').style.display = 'none';
+    updateLangText();
+}
+
+// Показать профиль пользователя
+function showUserProfile() {
+    const avatar = currentUser.username.charAt(0).toUpperCase();
+    document.getElementById('authSection').innerHTML = `
+        <div class="user-info" onclick="toggleProfile()">
+            <div class="user-avatar">${avatar}</div>
+            <div class="user-name">${currentUser.username}</div>
+        </div>
+    `;
+    
+    document.getElementById('profileAvatar').textContent = avatar;
+    document.getElementById('profileUsername').textContent = currentUser.username;
+    document.getElementById('profileEmail').textContent = currentUser.email;
+    document.getElementById('profileUrl').textContent = `lowv1re.eu/user${currentUser.id}`;
+    document.getElementById('profileBalance').textContent = `${currentUser.balance}₽`;
+    
+    const date = new Date(currentUser.created_at);
+    document.getElementById('profileDate').textContent = date.toLocaleDateString('ru-RU');
+}
+
+// Переключение видимости профиля
+function toggleProfile() {
+    const profile = document.getElementById('profileSection');
+    const games = document.getElementById('games');
+    if (profile.style.display === 'none') {
+        profile.style.display = 'block';
+        games.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        profile.style.display = 'none';
+        games.style.display = 'block';
+    }
+}
+
+// Регистрация
+async function register() {
+    const username = document.getElementById('registerUsername').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    const errorDiv = document.getElementById('registerError');
+    
+    if (!username || !email || !password) {
+        errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
+        return;
+    }
+    
+    if (password.length < 6) {
+        errorDiv.innerHTML = '<div class="error-msg">Пароль должен быть минимум 6 символов!</div>';
+        return;
+    }
+    
+    try {
+        // Проверка существования username
+        const { data: existingUser } = await supabase
+            .from('users')
+            .select('username')
+            .eq('username', username)
+            .maybeSingle();
+        
+        if (existingUser) {
+            errorDiv.innerHTML = '<div class="error-msg">Это имя пользователя уже занято!</div>';
+            return;
+        }
+        
+        // Регистрация через Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: password
+        });
+        
+        if (authError) throw authError;
+        
+        // Добавление пользователя в таблицу users
+        const { error: dbError } = await supabase
+            .from('users')
+            .insert([{
+                username: username,
+                email: email,
+                is_admin: false,
+                balance: 1000
+            }]);
+        
+        if (dbError) throw dbError;
+        
+        errorDiv.innerHTML = '<div class="success-msg">Регистрация успешна! Теперь войдите в аккаунт.</div>';
+        setTimeout(() => {
+            closeModal('registerModal');
+            document.getElementById('loginEmail').value = email;
+            openModal('loginModal');
+        }, 2000);
+        
+    } catch (error) {
+        errorDiv.innerHTML = `<div class="error-msg">${error.message}</div>`;
+    }
+}
+
+// Вход
+async function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errorDiv = document.getElementById('loginError');
+    
+    if (!email || !password) {
+        errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
+        return;
+    }
+    
+    try {
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+        
+        if (authError) {
+            errorDiv.innerHTML = '<div class="error-msg">Неверный email или пароль!</div>';
+            return;
+        }
+        
+        const { data: userData, error: dbError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
+        
+        if (!userData) {
+            errorDiv.innerHTML = '<div class="error-msg">Пользователь не найден в базе!</div>';
+            return;
+        }
+        
+        currentUser = userData;
+        closeModal('loginModal');
+        showUserProfile();
+        
+    } catch (error) {
+        errorDiv.innerHTML = '<div class="error-msg">Ошибка входа! Попробуйте снова.</div>';
+        console.error(error);
+    }
+}
+
+// Выход
+async function logout() {
+    await supabase.auth.signOut();
+    currentUser = null;
+    showAuthButton();
+    document.getElementById('profileSection').style.display = 'none';
+    document.getElementById('games').style.display = 'block';
+}
+
+// Покупка товара
+async function buyProduct(productName, price) {
+    if (!currentUser) {
+        openModal('loginModal');
+        return;
+    }
+    
+    if (currentUser.balance < price) {
+        alert(currentLang === 'ru' ? 'Недостаточно средств на балансе!' : 'Insufficient balance!');
+        return;
+    }
+    
+    try {
+        // Создание заказа
+        const { data: product } = await supabase
+            .from('products')
+            .select('id')
+            .eq('name', productName)
+            .maybeSingle();
+        
+        if (!product) {
+            alert(currentLang === 'ru' ? 'Товар не найден!' : 'Product not found!');
+            return;
+        }
+        
+        const { error: orderError } = await supabase
+            .from('orders')
+            .insert([{
+                user_id: currentUser.id,
+                product_id: product.id,
+                amount: price,
+                status: 'pending'
+            }]);
+        
+        if (orderError) throw orderError;
+        
+        // Обновление баланса
+        const newBalance = currentUser.balance - price;
+        const { error: balanceError } = await supabase
+            .from('users')
+            .update({ balance: newBalance })
+            .eq('id', currentUser.id);
+        
+        if (balanceError) throw balanceError;
+        
+        currentUser.balance = newBalance;
+        document.getElementById('profileBalance').textContent = `${newBalance}₽`;
+        
+        alert(currentLang === 'ru' ? 
+            `Товар "${productName}" куплен! Свяжитесь с @lowv1rre для получения.` : 
+            `Product "${productName}" purchased! Contact @lowv1rre to receive.`
+        );
+        
+    } catch (error) {
+        alert(currentLang === 'ru' ? 'Ошибка при покупке!' : 'Purchase error!');
+        console.error(error);
+    }
+}
+
+// Модальные окна
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+function switchModal(from, to) {
+    closeModal(from);
+    openModal(to);
+}
+
+// Переключение языка
+const langSwitch = document.getElementById('langSwitch');
+langSwitch.addEventListener('click', () => {
+    currentLang = currentLang === 'ru' ? 'en' : 'ru';
+    langSwitch.textContent = currentLang.toUpperCase();
+    updateLangText();
+});
+
+function updateLangText() {
+    document.querySelectorAll('[data-lang-text]').forEach(el => {
+        const texts = el.dataset.langText.split('|');
+        el.innerHTML = currentLang === 'ru' ? texts[0] : texts[1];
+    });
+}
+
+// Скрытие/показ хедера при скролле
+let lastScroll = 0;
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    if (currentScroll > 100) {
+        currentScroll > lastScroll ? header.classList.add('hidden') : header.classList.remove('hidden');
+    } else {
+        header.classList.remove('hidden');
+    }
+    lastScroll = currentScroll;
+});
+</script>
+</body>
+</html>="price-value">$1.1</div></div>
 <div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.0</div></div>
 </div>
 <button class="btn" onclick="buyProduct('Brawl Stars', 100)" data-lang-text="Купить|Buy">Купить</button>
