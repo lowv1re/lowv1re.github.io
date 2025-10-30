@@ -401,17 +401,33 @@ body::after{animation:none;}
 <div class="modal" id="resetModal">
 <div class="modal-content">
 <span class="modal-close" onclick="closeModal('resetModal')">&times;</span>
-<h2 class="modal-title" data-lang-text="Сброс пароля|Reset password">Сброс пароля</h2>
+<h2 class="modal-title" data-lang-text="Введите код|Enter code">Введите код</h2>
 <div id="resetError"></div>
 <div class="form-group">
+<label data-lang-text="Код из письма (6 цифр)|Code from email (6 digits)">Код из письма (6 цифр)</label>
+<input type="text" id="resetCode" placeholder="123456" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:5px;">
+</div>
+<button class="form-submit" onclick="verifyCode()" data-lang-text="Проверить код|Verify code">Проверить код</button>
+<div class="form-switch" style="margin-top:15px;">
+<a onclick="resendCode()" data-lang-text="Отправить код повторно|Resend code">Отправить код повторно</a>
+</div>
+</div>
+</div>
+
+<div class="modal" id="newPasswordModal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('newPasswordModal')">&times;</span>
+<h2 class="modal-title" data-lang-text="Новый пароль|New password">Новый пароль</h2>
+<div id="newPasswordError"></div>
+<div class="form-group">
 <label data-lang-text="Новый пароль|New password">Новый пароль</label>
-<input type="password" id="resetPassword" placeholder="••••••••">
+<input type="password" id="newPassword" placeholder="••••••••">
 </div>
 <div class="form-group">
 <label data-lang-text="Повторите пароль|Repeat password">Повторите пароль</label>
-<input type="password" id="resetPasswordConfirm" placeholder="••••••••">
+<input type="password" id="newPasswordConfirm" placeholder="••••••••">
 </div>
-<button class="form-submit" onclick="resetPassword()" data-lang-text="Изменить пароль|Change password">Изменить пароль</button>
+<button class="form-submit" onclick="saveNewPassword()" data-lang-text="Сохранить пароль|Save password">Сохранить пароль</button>
 </div>
 </div>
 
@@ -422,6 +438,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 let currentLang = 'ru';
 let recoveryEmail = '';
+let verifiedCode = '';
 
 window.addEventListener('load', async () => {
     await checkAuth();
@@ -600,18 +617,13 @@ async function sendRecovery() {
         
         if (type === 'password') {
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: window.location.origin
+                redirectTo: `${window.location.origin}/#type=recovery`
             });
             
             if (error) throw error;
             
             recoveryEmail = email;
-            errorDiv.innerHTML = '<div class="success-msg">Письмо отправлено! Проверьте почту и следуйте инструкциям.</div>';
-            
-            setTimeout(() => {
-                closeModal('forgotModal');
-                openModal('resetModal');
-            }, 2000);
+            errorDiv.innerHTML = '<div class="success-msg">Письмо отправлено! Проверьте почту и перейдите по ссылке для смены пароля.</div>';
         }
     } catch (error) {
         errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
@@ -619,12 +631,17 @@ async function sendRecovery() {
 }
 
 async function resetPassword() {
-    const code = document.getElementById('resetCode').value.trim();
     const newPassword = document.getElementById('resetPassword').value;
+    const confirmPassword = document.getElementById('resetPasswordConfirm').value;
     const errorDiv = document.getElementById('resetError');
     
-    if (!code || !newPassword) {
+    if (!newPassword || !confirmPassword) {
         errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        errorDiv.innerHTML = '<div class="error-msg">Пароли не совпадают!</div>';
         return;
     }
     
@@ -642,10 +659,11 @@ async function resetPassword() {
         
         setTimeout(() => {
             closeModal('resetModal');
+            window.location.hash = '';
             openModal('loginModal');
         }, 2000);
     } catch (error) {
-        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}. Возможно истек срок действия ссылки. Запросите новую ссылку для восстановления.</div>`;
     }
 }
 
