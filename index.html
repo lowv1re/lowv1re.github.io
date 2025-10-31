@@ -336,7 +336,8 @@ body::after{animation:none;}
 <div id="loginError"></div>
 <div class="form-group">
 <label data-lang-text="Email|Email">Email</label>
-<input type="email" id="loginEmail" placeholder="your@email.com">
+<input type="email" id="loginEmail" placeholder="your@email.com" oninput="validateEmailInput(this, 'loginEmailError')">
+<div id="loginEmailError"></div>
 </div>
 <div class="form-group">
 <label data-lang-text="Пароль|Password">Пароль</label>
@@ -360,11 +361,13 @@ body::after{animation:none;}
 <div id="registerError"></div>
 <div class="form-group">
 <label data-lang-text="Имя пользователя|Username">Имя пользователя</label>
-<input type="text" id="registerUsername" placeholder="username">
+<input type="text" id="registerUsername" placeholder="username" oninput="validateUsernameInput(this)">
+<div id="usernameError"></div>
 </div>
 <div class="form-group">
 <label data-lang-text="Email|Email">Email</label>
-<input type="email" id="registerEmail" placeholder="your@email.com">
+<input type="email" id="registerEmail" placeholder="your@email.com" oninput="validateEmailInput(this, 'emailError')">
+<div id="emailError"></div>
 </div>
 <div class="form-group">
 <label data-lang-text="Пароль|Password">Пароль</label>
@@ -410,7 +413,8 @@ body::after{animation:none;}
 </div>
 <div class="form-group">
 <label data-lang-text="Ваш Email|Your Email">Ваш Email</label>
-<input type="email" id="forgotEmail" placeholder="your@email.com">
+<input type="email" id="forgotEmail" placeholder="your@email.com" oninput="validateEmailInput(this, 'forgotEmailError')">
+<div id="forgotEmailError"></div>
 </div>
 <button class="form-submit" id="forgotBtn" onclick="sendRecovery()" data-lang-text="Отправить код|Send code">Отправить код</button>
 <div class="form-switch">
@@ -455,6 +459,7 @@ body::after{animation:none;}
 <script>
 const SUPABASE_URL = 'https://nbelgmhtxjjlfpqmkqbl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5iZWxnbWh0eGpqbGZwcW1rcWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDg2OTcsImV4cCI6MjA3NzQyNDY5N30.6snueQkGb7LorM_qhVNHdxUOC90FypoVzxllniwn70Q';
+const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5iZWxnbWh0eGpqbGZwcW1rcWJsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTg0ODY5NywiZXhwIjoyMDc3NDI0Njk3fQ.GVikzSAsIu2u1Ns-eFWgtcXjAMhi2m5vGLTRIBLFUWI';
 const EDGE_FUNCTION_URL = 'https://nbelgmhtxjjlfpqmkqbl.supabase.co/functions/v1/send-recovery-code';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
@@ -467,6 +472,48 @@ let pendingRegistration = null;
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+}
+
+// Валидация username (только английские буквы и цифры)
+function isValidUsername(username) {
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    return usernameRegex.test(username);
+}
+
+// Проверка username в реальном времени
+function validateUsernameInput(input) {
+    const value = input.value;
+    const errorDiv = document.getElementById('usernameError');
+    
+    if (value && !isValidUsername(value)) {
+        input.style.borderColor = '#ff4444';
+        input.style.boxShadow = '0 0 10px rgba(255, 68, 68, 0.5)';
+        errorDiv.innerHTML = '<div class="error-msg" style="margin-top:5px;">Username может содержать только английские буквы (a-z) и цифры (0-9)</div>';
+    } else {
+        input.style.borderColor = 'rgba(255,140,0,0.4)';
+        input.style.boxShadow = 'none';
+        errorDiv.innerHTML = '';
+    }
+}
+
+// Проверка email в реальном времени
+function validateEmailInput(input, errorDivId) {
+    const value = input.value.trim();
+    const errorDiv = document.getElementById(errorDivId);
+    
+    if (value && !isValidEmail(value)) {
+        input.style.borderColor = '#ff4444';
+        input.style.boxShadow = '0 0 10px rgba(255, 68, 68, 0.5)';
+        if (!errorDiv.querySelector('.error-msg')) {
+            errorDiv.innerHTML = '<div class="error-msg" style="margin-top:5px;">Введите корректный email (например: name@example.com)</div>';
+        }
+    } else {
+        input.style.borderColor = 'rgba(255,140,0,0.4)';
+        input.style.boxShadow = 'none';
+        if (errorDiv.querySelector('.error-msg') && errorDiv.textContent.includes('email')) {
+            errorDiv.innerHTML = '';
+        }
+    }
 }
 
 // Очистка формы
@@ -545,6 +592,17 @@ async function register() {
         return;
     }
     
+    // Валидация username
+    if (!isValidUsername(username)) {
+        errorDiv.innerHTML = '<div class="error-msg">Username может содержать только английские буквы (a-z) и цифры (0-9)</div>';
+        return;
+    }
+    
+    if (username.length < 3) {
+        errorDiv.innerHTML = '<div class="error-msg">Username должен содержать минимум 3 символа</div>';
+        return;
+    }
+    
     // Валидация email
     if (!isValidEmail(email)) {
         errorDiv.innerHTML = '<div class="error-msg">Введите корректный email!</div>';
@@ -616,13 +674,13 @@ async function register() {
         console.log('EMAIL:', email);
         console.log('===================');
         
-        // Пытаемся отправить через Edge Function (может не работать из-за CORS)
+        // Отправляем через Edge Function с Service Role Key
         try {
             const response = await fetch(EDGE_FUNCTION_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                    'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
                 },
                 body: JSON.stringify({
                     email: email,
@@ -631,19 +689,20 @@ async function register() {
             });
             
             if (response.ok) {
-                console.log('Email отправлен успешно!');
+                console.log('✅ Email отправлен успешно!');
+                errorDiv.innerHTML = '<div class="success-msg">✅ Код отправлен на почту! Проверьте email.</div>';
             } else {
-                console.warn('Не удалось отправить email, но код сохранен в БД');
+                const errorData = await response.json();
+                console.warn('⚠️ Ошибка отправки email:', errorData);
+                errorDiv.innerHTML = '<div class="success-msg">⚠️ Код сохранен! Проверьте консоль (F12).</div>';
             }
         } catch (emailError) {
-            console.warn('Ошибка отправки email:', emailError);
-            // Не бросаем ошибку - продолжаем регистрацию
+            console.warn('⚠️ Ошибка отправки email:', emailError);
+            errorDiv.innerHTML = '<div class="success-msg">⚠️ Код сохранен! Проверьте консоль (F12).</div>';
         }
         
         // Сохраняем данные регистрации
         pendingRegistration = { username, email, password };
-        
-        errorDiv.innerHTML = '<div class="success-msg">✅ Код сохранен в БД! Проверьте консоль (F12) для кода.<br>Нажмите кнопку ниже чтобы ввести код.</div>';
         
         // Показываем кнопку "Ввести код"
         document.getElementById('registerBtn').style.display = 'none';
@@ -733,14 +792,30 @@ async function verifyEmailCode() {
         
         if (dbError) throw dbError;
         
-        errorDiv.innerHTML = '<div class="success-msg">Регистрация завершена! Войдите в аккаунт.</div>';
+        // Автоматический вход в аккаунт
+        const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+            email: pendingRegistration.email,
+            password: pendingRegistration.password
+        });
+        
+        if (loginError) throw loginError;
+        
+        // Получаем данные пользователя
+        const { data: finalUserData } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', pendingRegistration.email)
+            .single();
+        
+        currentUser = finalUserData;
+        
+        errorDiv.innerHTML = '<div class="success-msg">✅ Регистрация завершена! Добро пожаловать!</div>';
         
         setTimeout(() => {
             closeModal('verifyEmailModal');
-            document.getElementById('loginEmail').value = pendingRegistration.email;
+            showUserProfile();
             pendingRegistration = null;
-            openModal('loginModal');
-        }, 2000);
+        }, 1500);
         
     } catch (error) {
         console.error('Verification error:', error);
@@ -776,11 +851,16 @@ async function resendVerificationCode() {
             used: false
         }]);
         
+        console.log('===================');
+        console.log('НОВЫЙ КОД:', code);
+        console.log('EMAIL:', pendingRegistration.email);
+        console.log('===================');
+        
         const response = await fetch(EDGE_FUNCTION_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SUPABASE_KEY}`
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
             },
             body: JSON.stringify({
                 email: pendingRegistration.email,
@@ -788,9 +868,12 @@ async function resendVerificationCode() {
             })
         });
         
-        if (!response.ok) throw new Error('Ошибка отправки');
+        if (response.ok) {
+            errorDiv.innerHTML = '<div class="success-msg">✅ Новый код отправлен на почту!</div>';
+        } else {
+            errorDiv.innerHTML = '<div class="success-msg">⚠️ Новый код в консоли (F12)!</div>';
+        }
         
-        errorDiv.innerHTML = '<div class="success-msg">Новый код отправлен!</div>';
         document.getElementById('verifyCode').value = '';
         document.getElementById('verifyCode').focus();
     } catch (error) {
@@ -995,7 +1078,7 @@ async function sendRecovery() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                    'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
                 },
                 body: JSON.stringify({
                     email: email,
@@ -1003,10 +1086,17 @@ async function sendRecovery() {
                 })
             });
             
-            if (!response.ok) throw new Error('Ошибка отправки email');
+            console.log('===================');
+            console.log('КОД ВОССТАНОВЛЕНИЯ:', code);
+            console.log('EMAIL:', email);
+            console.log('===================');
+            
+            if (!response.ok) {
+                console.warn('Не удалось отправить email');
+            }
             
             recoveryEmail = email;
-            errorDiv.innerHTML = '<div class="success-msg">Код отправлен на почту!</div>';
+            errorDiv.innerHTML = '<div class="success-msg">Код отправлен! Проверьте почту или консоль (F12).</div>';
             
             setTimeout(() => {
                 closeModal('forgotModal');
@@ -1110,11 +1200,16 @@ async function resendCode() {
             used: false
         }]);
         
+        console.log('===================');
+        console.log('НОВЫЙ КОД ВОССТАНОВЛЕНИЯ:', code);
+        console.log('EMAIL:', recoveryEmail);
+        console.log('===================');
+        
         const response = await fetch(EDGE_FUNCTION_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SUPABASE_KEY}`
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
             },
             body: JSON.stringify({
                 email: recoveryEmail,
@@ -1122,9 +1217,12 @@ async function resendCode() {
             })
         });
         
-        if (!response.ok) throw new Error('Ошибка отправки');
+        if (response.ok) {
+            errorDiv.innerHTML = '<div class="success-msg">✅ Новый код отправлен!</div>';
+        } else {
+            errorDiv.innerHTML = '<div class="success-msg">⚠️ Новый код в консоли (F12)!</div>';
+        }
         
-        errorDiv.innerHTML = '<div class="success-msg">Новый код отправлен!</div>';
         document.getElementById('resetCode').value = '';
         document.getElementById('resetCode').focus();
     } catch (error) {
