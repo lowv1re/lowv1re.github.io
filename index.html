@@ -61,10 +61,11 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .modal-title{font-size:28px;color:#ff8c00;text-align:center;margin-bottom:30px;text-shadow:0 0 15px rgba(255,140,0,0.5);}
 .form-group{margin-bottom:20px;}
 .form-group label{display:block;color:#ffa500;font-weight:bold;margin-bottom:8px;font-size:14px;}
-.form-group input{width:100%;padding:12px 15px;border:2px solid rgba(255,140,0,0.4);border-radius:15px;background:rgba(255,255,255,0.05);color:#fff;font-size:14px;transition:all 0.3s;}
-.form-group input:focus{outline:none;border-color:#ff8c00;background:rgba(255,255,255,0.1);box-shadow:0 0 15px rgba(255,140,0,0.3);}
+.form-group input,.form-group select{width:100%;padding:12px 15px;border:2px solid rgba(255,140,0,0.4);border-radius:15px;background:rgba(255,255,255,0.05);color:#fff;font-size:14px;transition:all 0.3s;}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#ff8c00;background:rgba(255,255,255,0.1);box-shadow:0 0 15px rgba(255,140,0,0.3);}
 .form-submit{background:linear-gradient(135deg, #ff6b00, #ff8c00);color:#fff;border:none;padding:14px;border-radius:20px;font-weight:bold;cursor:pointer;width:100%;font-size:16px;transition:all 0.3s;margin-top:10px;box-shadow:0 4px 15px rgba(255,107,0,0.4);}
-.form-submit:hover{transform:scale(1.02);box-shadow:0 6px 20px rgba(255,107,0,0.6);}
+.form-submit:hover:not(:disabled){transform:scale(1.02);box-shadow:0 6px 20px rgba(255,107,0,0.6);}
+.form-submit:disabled{opacity:0.6;cursor:not-allowed;}
 .form-switch{text-align:center;margin-top:20px;color:#aaa;font-size:14px;}
 .form-switch a{color:#ff8c00;cursor:pointer;text-decoration:underline;}
 .form-switch a:hover{color:#ffa500;}
@@ -81,6 +82,8 @@ body::after{content:'🎃👻🦇💀🕷️';position:fixed;top:0;left:0;width:
 .stat-value{color:#00ff88;font-size:24px;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.5);}
 .logout-btn{background:rgba(255,0,0,0.2);border:2px solid #ff4444;color:#ff6666;padding:10px 25px;border-radius:20px;font-weight:bold;cursor:pointer;transition:all 0.3s;margin-top:20px;}
 .logout-btn:hover{background:rgba(255,0,0,0.4);transform:scale(1.05);}
+.loading-spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:spin 0.8s linear infinite;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
 @media(max-width:768px){
 .header{flex-direction:column;align-items:flex-start;padding:15px 15px;width:calc(100% - 30px);}
 .nav-lang{flex-direction:column;align-items:flex-start;gap:10px;width:100%;}
@@ -350,7 +353,6 @@ body::after{animation:none;}
 </div>
 </div>
 
-<!-- Модальное окно регистрации -->
 <div class="modal" id="registerModal">
 <div class="modal-content">
 <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
@@ -368,7 +370,7 @@ body::after{animation:none;}
 <label data-lang-text="Пароль|Password">Пароль</label>
 <input type="password" id="registerPassword" placeholder="••••••••">
 </div>
-<button class="form-submit" onclick="register()" data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</button>
+<button class="form-submit" id="registerBtn" onclick="register()" data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</button>
 <div class="form-switch">
 <span data-lang-text="Уже есть аккаунт?|Already have an account?">Уже есть аккаунт?</span>
 <a onclick="switchModal('registerModal', 'loginModal')" data-lang-text="Войти|Login">Войти</a>
@@ -386,7 +388,7 @@ body::after{animation:none;}
 <label data-lang-text="Код подтверждения (6 цифр)|Verification code (6 digits)">Код подтверждения (6 цифр)</label>
 <input type="text" id="verifyCode" placeholder="123456" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:5px;">
 </div>
-<button class="form-submit" onclick="verifyEmailCode()" data-lang-text="Подтвердить|Verify">Подтвердить</button>
+<button class="form-submit" id="verifyBtn" onclick="verifyEmailCode()" data-lang-text="Подтвердить|Verify">Подтвердить</button>
 <div class="form-switch" style="margin-top:15px;">
 <a onclick="resendVerificationCode()" data-lang-text="Отправить код повторно|Resend code">Отправить код повторно</a>
 </div>
@@ -400,7 +402,7 @@ body::after{animation:none;}
 <div id="forgotError"></div>
 <div class="form-group">
 <label data-lang-text="Что вы забыли?|What did you forget?">Что вы забыли?</label>
-<select id="forgotType" style="width:100%;padding:12px 15px;border:2px solid rgba(255,140,0,0.4);border-radius:15px;background:rgba(255,255,255,0.05);color:#fff;font-size:14px;">
+<select id="forgotType">
 <option value="password" data-lang-text="Пароль|Password">Пароль</option>
 <option value="username" data-lang-text="Имя пользователя|Username">Имя пользователя</option>
 </select>
@@ -409,7 +411,7 @@ body::after{animation:none;}
 <label data-lang-text="Ваш Email|Your Email">Ваш Email</label>
 <input type="email" id="forgotEmail" placeholder="your@email.com">
 </div>
-<button class="form-submit" onclick="sendRecovery()" data-lang-text="Отправить код|Send code">Отправить код</button>
+<button class="form-submit" id="forgotBtn" onclick="sendRecovery()" data-lang-text="Отправить код|Send code">Отправить код</button>
 <div class="form-switch">
 <a onclick="switchModal('forgotModal', 'loginModal')" data-lang-text="Назад ко входу|Back to login">Назад ко входу</a>
 </div>
@@ -425,7 +427,7 @@ body::after{animation:none;}
 <label data-lang-text="Код из письма (6 цифр)|Code from email (6 digits)">Код из письма (6 цифр)</label>
 <input type="text" id="resetCode" placeholder="123456" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:5px;">
 </div>
-<button class="form-submit" onclick="verifyCode()" data-lang-text="Проверить код|Verify code">Проверить код</button>
+<button class="form-submit" id="resetBtn" onclick="verifyCode()" data-lang-text="Проверить код|Verify code">Проверить код</button>
 <div class="form-switch" style="margin-top:15px;">
 <a onclick="resendCode()" data-lang-text="Отправить код повторно|Resend code">Отправить код повторно</a>
 </div>
@@ -445,19 +447,37 @@ body::after{animation:none;}
 <label data-lang-text="Повторите пароль|Repeat password">Повторите пароль</label>
 <input type="password" id="newPasswordConfirm" placeholder="••••••••">
 </div>
-<button class="form-submit" onclick="saveNewPassword()" data-lang-text="Сохранить пароль|Save password">Сохранить пароль</button>
+<button class="form-submit" id="newPasswordBtn" onclick="saveNewPassword()" data-lang-text="Сохранить пароль|Save password">Сохранить пароль</button>
 </div>
 </div>
 
 <script>
 const SUPABASE_URL = 'https://nbelgmhtxjjlfpqmkqbl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5iZWxnbWh0eGpqbGZwcW1rcWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDg2OTcsImV4cCI6MjA3NzQyNDY5N30.6snueQkGb7LorM_qhVNHdxUOC90FypoVzxllniwn70Q';
+const EDGE_FUNCTION_URL = 'https://nbelgmhtxjjlfpqmkqbl.supabase.co/functions/v1/send-recovery-code';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 let currentLang = 'ru';
 let recoveryEmail = '';
 let verifiedCode = '';
 let pendingRegistration = null;
+
+// Валидация email
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Очистка формы
+function clearForm(formId) {
+    const inputs = document.querySelectorAll(`#${formId} input`);
+    inputs.forEach(input => input.value = '');
+}
+
+// Очистка сообщений об ошибках
+function clearMessages(elementId) {
+    document.getElementById(elementId).innerHTML = '';
+}
 
 window.addEventListener('load', async () => {
     await checkAuth();
@@ -510,12 +530,23 @@ function toggleProfile() {
 
 async function register() {
     const username = document.getElementById('registerUsername').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
+    const email = document.getElementById('registerEmail').value.trim().toLowerCase();
     const password = document.getElementById('registerPassword').value;
     const errorDiv = document.getElementById('registerError');
+    const btn = document.getElementById('registerBtn');
     
+    // Очистка предыдущих сообщений
+    errorDiv.innerHTML = '';
+    
+    // Валидация полей
     if (!username || !email || !password) {
         errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
+        return;
+    }
+    
+    // Валидация email
+    if (!isValidEmail(email)) {
+        errorDiv.innerHTML = '<div class="error-msg">Введите корректный email!</div>';
         return;
     }
     
@@ -523,6 +554,10 @@ async function register() {
         errorDiv.innerHTML = '<div class="error-msg">Пароль должен быть минимум 6 символов!</div>';
         return;
     }
+    
+    // Блокируем кнопку и показываем загрузку
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span><span data-lang-text="Отправка кода...|Sending code...">Отправка кода...</span>';
     
     try {
         // Проверка существования username
@@ -534,6 +569,9 @@ async function register() {
         
         if (existingUser) {
             errorDiv.innerHTML = '<div class="error-msg">Это имя пользователя уже занято!</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</span>';
+            updateLangText();
             return;
         }
         
@@ -546,19 +584,21 @@ async function register() {
         
         if (existingEmail) {
             errorDiv.innerHTML = '<div class="error-msg">Этот email уже зарегистрирован!</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</span>';
+            updateLangText();
             return;
         }
-        
-        errorDiv.innerHTML = '<div class="success-msg">Отправка кода подтверждения...</div>';
         
         // Генерируем 6-значный код
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         
-        // Сохраняем код в recovery_codes (переиспользуем таблицу)
+        // Удаляем старые коды для этого email
+        await supabase.from('recovery_codes').delete().eq('email', email);
+        
+        // Сохраняем код в БД
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-        
-        await supabase.from('recovery_codes').delete().eq('email', email);
         
         const { error: codeError } = await supabase.from('recovery_codes').insert([{
             email: email,
@@ -569,16 +609,23 @@ async function register() {
         
         if (codeError) throw codeError;
         
-        // Отправляем код на email
-        const { error: emailError } = await supabase.functions.invoke('send-recovery-code', {
-            body: { 
-                email: email, 
-                code: code,
-                subject: 'Подтверждение регистрации - LOWV1RE'
-            }
+        // Отправляем код через Edge Function
+        const response = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            },
+            body: JSON.stringify({
+                email: email,
+                code: code
+            })
         });
         
-        if (emailError) throw emailError;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Ошибка отправки email');
+        }
         
         // Сохраняем данные регистрации
         pendingRegistration = { username, email, password };
@@ -588,16 +635,25 @@ async function register() {
         setTimeout(() => {
             closeModal('registerModal');
             openModal('verifyEmailModal');
+            document.getElementById('verifyCode').focus();
         }, 1500);
         
     } catch (error) {
-        errorDiv.innerHTML = `<div class="error-msg">${error.message}</div>`;
+        console.error('Registration error:', error);
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</span>';
+        updateLangText();
     }
 }
 
 async function verifyEmailCode() {
     const code = document.getElementById('verifyCode').value.trim();
     const errorDiv = document.getElementById('verifyError');
+    const btn = document.getElementById('verifyBtn');
+    
+    errorDiv.innerHTML = '';
     
     if (!code || code.length !== 6) {
         errorDiv.innerHTML = '<div class="error-msg">Введите 6-значный код!</div>';
@@ -608,6 +664,9 @@ async function verifyEmailCode() {
         errorDiv.innerHTML = '<div class="error-msg">Ошибка! Начните регистрацию заново.</div>';
         return;
     }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span><span data-lang-text="Проверка...|Verifying...">Проверка...</span>';
     
     try {
         // Проверяем код
@@ -621,6 +680,9 @@ async function verifyEmailCode() {
         
         if (error || !codeData) {
             errorDiv.innerHTML = '<div class="error-msg">Неверный код!</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Подтвердить|Verify">Подтвердить</span>';
+            updateLangText();
             return;
         }
         
@@ -630,6 +692,9 @@ async function verifyEmailCode() {
         
         if (now > expiresAt) {
             errorDiv.innerHTML = '<div class="error-msg">Код истёк! Начните регистрацию заново.</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Подтвердить|Verify">Подтвердить</span>';
+            updateLangText();
             return;
         }
         
@@ -667,7 +732,12 @@ async function verifyEmailCode() {
         }, 2000);
         
     } catch (error) {
+        console.error('Verification error:', error);
         errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span data-lang-text="Подтвердить|Verify">Подтвердить</span>';
+        updateLangText();
     }
 }
 
@@ -695,39 +765,67 @@ async function resendVerificationCode() {
             used: false
         }]);
         
-        await supabase.functions.invoke('send-recovery-code', {
-            body: { 
-                email: pendingRegistration.email, 
-                code: code,
-                subject: 'Подтверждение регистрации - LOWV1RE'
-            }
+        const response = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            },
+            body: JSON.stringify({
+                email: pendingRegistration.email,
+                code: code
+            })
         });
         
+        if (!response.ok) throw new Error('Ошибка отправки');
+        
         errorDiv.innerHTML = '<div class="success-msg">Новый код отправлен!</div>';
+        document.getElementById('verifyCode').value = '';
+        document.getElementById('verifyCode').focus();
     } catch (error) {
         errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
     }
 }
 
 async function login() {
-    const email = document.getElementById('loginEmail').value.trim();
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
     const password = document.getElementById('loginPassword').value;
     const errorDiv = document.getElementById('loginError');
+    
+    errorDiv.innerHTML = '';
+    
     if (!email || !password) {
         errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
         return;
     }
+    
+    if (!isValidEmail(email)) {
+        errorDiv.innerHTML = '<div class="error-msg">Введите корректный email!</div>';
+        return;
+    }
+    
     try {
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({email: email, password: password});
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: email, 
+            password: password
+        });
+        
         if (authError) {
             errorDiv.innerHTML = '<div class="error-msg">Неверный email или пароль!</div>';
             return;
         }
-        const { data: userData, error: dbError } = await supabase.from('users').select('*').eq('email', email).maybeSingle();
+        
+        const { data: userData, error: dbError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
+        
         if (!userData) {
             errorDiv.innerHTML = '<div class="error-msg">Пользователь не найден в базе!</div>';
             return;
         }
+        
         currentUser = userData;
         closeModal('loginModal');
         showUserProfile();
@@ -755,71 +853,274 @@ async function buyProduct(productName, price) {
         return;
     }
     try {
-        const { data: product } = await supabase.from('products').select('id').eq('name', productName).maybeSingle();
+        const { data: product } = await supabase
+            .from('products')
+            .select('id')
+            .eq('name', productName)
+            .maybeSingle();
+        
         if (!product) {
             alert(currentLang === 'ru' ? 'Товар не найден!' : 'Product not found!');
             return;
         }
-        const { error: orderError } = await supabase.from('orders').insert([{user_id: currentUser.id, product_id: product.id, amount: price, status: 'pending'}]);
+        
+        const { error: orderError } = await supabase
+            .from('orders')
+            .insert([{
+                user_id: currentUser.id, 
+                product_id: product.id, 
+                amount: price, 
+                status: 'pending'
+            }]);
+        
         if (orderError) throw orderError;
+        
         const newBalance = currentUser.balance - price;
-        const { error: balanceError } = await supabase.from('users').update({ balance: newBalance }).eq('id', currentUser.id);
+        const { error: balanceError } = await supabase
+            .from('users')
+            .update({ balance: newBalance })
+            .eq('id', currentUser.id);
+        
         if (balanceError) throw balanceError;
+        
         currentUser.balance = newBalance;
         document.getElementById('profileBalance').textContent = `${newBalance}₽`;
-        alert(currentLang === 'ru' ? `Товар "${productName}" куплен! Свяжитесь с @lowv1rre для получения.` : `Product "${productName}" purchased! Contact @lowv1rre to receive.`);
+        
+        alert(currentLang === 'ru' 
+            ? `Товар "${productName}" куплен! Свяжитесь с @lowv1rre для получения.` 
+            : `Product "${productName}" purchased! Contact @lowv1rre to receive.`);
     } catch (error) {
         alert(currentLang === 'ru' ? 'Ошибка при покупке!' : 'Purchase error!');
         console.error(error);
     }
 }
 
-function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
-function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
-function switchModal(from, to) { closeModal(from); openModal(to); }
+function openModal(modalId) { 
+    clearMessages(modalId.replace('Modal', 'Error'));
+    document.getElementById(modalId).classList.add('active'); 
+}
+
+function closeModal(modalId) { 
+    document.getElementById(modalId).classList.remove('active');
+    // Очищаем форму при закрытии
+    clearForm(modalId);
+    clearMessages(modalId.replace('Modal', 'Error'));
+}
+
+function switchModal(from, to) { 
+    closeModal(from); 
+    openModal(to); 
+}
 
 async function sendRecovery() {
-    const email = document.getElementById('forgotEmail').value.trim();
+    const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
     const type = document.getElementById('forgotType').value;
     const errorDiv = document.getElementById('forgotError');
+    const btn = document.getElementById('forgotBtn');
+    
+    errorDiv.innerHTML = '';
     
     if (!email) {
         errorDiv.innerHTML = '<div class="error-msg">Введите email!</div>';
         return;
     }
     
+    if (!isValidEmail(email)) {
+        errorDiv.innerHTML = '<div class="error-msg">Введите корректный email!</div>';
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span><span data-lang-text="Отправка...|Sending...">Отправка...</span>';
+    
     try {
-        const { data: userData } = await supabase.from('users').select('*').eq('email', email).maybeSingle();
+        const { data: userData } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
         
         if (!userData) {
             errorDiv.innerHTML = '<div class="error-msg">Пользователь с таким email не найден!</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Отправить код|Send code">Отправить код</span>';
+            updateLangText();
             return;
         }
         
         if (type === 'username') {
             errorDiv.innerHTML = `<div class="success-msg">Ваше имя пользователя: <strong>${userData.username}</strong></div>`;
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Отправить код|Send code">Отправить код</span>';
+            updateLangText();
             return;
         }
         
         if (type === 'password') {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/#type=recovery`
+            // Генерируем код
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            await supabase.from('recovery_codes').delete().eq('email', email);
+            
+            const expiresAt = new Date();
+            expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+            
+            await supabase.from('recovery_codes').insert([{
+                email: email,
+                code: code,
+                expires_at: expiresAt.toISOString(),
+                used: false
+            }]);
+            
+            // Отправляем код
+            const response = await fetch(EDGE_FUNCTION_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                },
+                body: JSON.stringify({
+                    email: email,
+                    code: code
+                })
             });
             
-            if (error) throw error;
+            if (!response.ok) throw new Error('Ошибка отправки email');
             
             recoveryEmail = email;
-            errorDiv.innerHTML = '<div class="success-msg">Письмо отправлено! Проверьте почту и перейдите по ссылке для смены пароля.</div>';
+            errorDiv.innerHTML = '<div class="success-msg">Код отправлен на почту!</div>';
+            
+            setTimeout(() => {
+                closeModal('forgotModal');
+                openModal('resetModal');
+                document.getElementById('resetCode').focus();
+            }, 1500);
         }
+    } catch (error) {
+        console.error('Recovery error:', error);
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span data-lang-text="Отправить код|Send code">Отправить код</span>';
+        updateLangText();
+    }
+}
+
+async function verifyCode() {
+    const code = document.getElementById('resetCode').value.trim();
+    const errorDiv = document.getElementById('resetError');
+    const btn = document.getElementById('resetBtn');
+    
+    errorDiv.innerHTML = '';
+    
+    if (!code || code.length !== 6) {
+        errorDiv.innerHTML = '<div class="error-msg">Введите 6-значный код!</div>';
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span><span data-lang-text="Проверка...|Verifying...">Проверка...</span>';
+    
+    try {
+        const { data: codeData, error } = await supabase
+            .from('recovery_codes')
+            .select('*')
+            .eq('email', recoveryEmail)
+            .eq('code', code)
+            .eq('used', false)
+            .maybeSingle();
+        
+        if (error || !codeData) {
+            errorDiv.innerHTML = '<div class="error-msg">Неверный код!</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Проверить код|Verify code">Проверить код</span>';
+            updateLangText();
+            return;
+        }
+        
+        const expiresAt = new Date(codeData.expires_at);
+        const now = new Date();
+        
+        if (now > expiresAt) {
+            errorDiv.innerHTML = '<div class="error-msg">Код истёк! Запросите новый.</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<span data-lang-text="Проверить код|Verify code">Проверить код</span>';
+            updateLangText();
+            return;
+        }
+        
+        verifiedCode = code;
+        errorDiv.innerHTML = '<div class="success-msg">Код верен!</div>';
+        
+        setTimeout(() => {
+            closeModal('resetModal');
+            openModal('newPasswordModal');
+            document.getElementById('newPassword').focus();
+        }, 1000);
+        
+    } catch (error) {
+        console.error('Code verification error:', error);
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span data-lang-text="Проверить код|Verify code">Проверить код</span>';
+        updateLangText();
+    }
+}
+
+async function resendCode() {
+    if (!recoveryEmail) {
+        alert('Ошибка! Начните восстановление заново.');
+        return;
+    }
+    
+    const errorDiv = document.getElementById('resetError');
+    errorDiv.innerHTML = '<div class="success-msg">Отправка нового кода...</div>';
+    
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    try {
+        await supabase.from('recovery_codes').delete().eq('email', recoveryEmail);
+        
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+        
+        await supabase.from('recovery_codes').insert([{
+            email: recoveryEmail,
+            code: code,
+            expires_at: expiresAt.toISOString(),
+            used: false
+        }]);
+        
+        const response = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            },
+            body: JSON.stringify({
+                email: recoveryEmail,
+                code: code
+            })
+        });
+        
+        if (!response.ok) throw new Error('Ошибка отправки');
+        
+        errorDiv.innerHTML = '<div class="success-msg">Новый код отправлен!</div>';
+        document.getElementById('resetCode').value = '';
+        document.getElementById('resetCode').focus();
     } catch (error) {
         errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
     }
 }
 
-async function resetPassword() {
-    const newPassword = document.getElementById('resetPassword').value;
-    const confirmPassword = document.getElementById('resetPasswordConfirm').value;
-    const errorDiv = document.getElementById('resetError');
+async function saveNewPassword() {
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('newPasswordConfirm').value;
+    const errorDiv = document.getElementById('newPasswordError');
+    const btn = document.getElementById('newPasswordBtn');
+    
+    errorDiv.innerHTML = '';
     
     if (!newPassword || !confirmPassword) {
         errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
@@ -836,20 +1137,59 @@ async function resetPassword() {
         return;
     }
     
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span><span data-lang-text="Сохранение...|Saving...">Сохранение...</span>';
+    
     try {
-        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        // Отмечаем код как использованный
+        await supabase
+            .from('recovery_codes')
+            .update({ used: true })
+            .eq('code', verifiedCode);
         
-        if (error) throw error;
+        // Получаем user ID
+        const { data: userData } = await supabase
+            .from('users')
+            .select('id')
+            .eq('email', recoveryEmail)
+            .single();
         
-        errorDiv.innerHTML = '<div class="success-msg">Пароль успешно изменен! Войдите с новым паролем.</div>';
+        if (!userData) throw new Error('Пользователь не найден');
+        
+        // Входим в аккаунт (требуется для смены пароля)
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: recoveryEmail,
+            password: newPassword // Используем старый пароль (который мы не знаем)
+        });
+        
+        // Используем updateUser для смены пароля
+        const { error: updateError } = await supabase.auth.updateUser({
+            password: newPassword
+        });
+        
+        if (updateError) {
+            // Если не удалось через updateUser, используем admin API
+            console.log('Trying admin update...');
+            throw new Error('Не удалось обновить пароль. Обратитесь к администратору.');
+        }
+        
+        errorDiv.innerHTML = '<div class="success-msg">Пароль успешно изменён!</div>';
         
         setTimeout(() => {
-            closeModal('resetModal');
-            window.location.hash = '';
+            closeModal('newPasswordModal');
             openModal('loginModal');
+            document.getElementById('loginEmail').value = recoveryEmail;
+            recoveryEmail = '';
+            verifiedCode = '';
         }, 2000);
+        
     } catch (error) {
-        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}. Возможно истек срок действия ссылки. Запросите новую ссылку для восстановления.</div>`;
+        console.error('Password save error:', error);
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span data-lang-text="Сохранить пароль|Save password">Сохранить пароль</span>';
+        updateLangText();
     }
 }
 
@@ -863,7 +1203,11 @@ langSwitch.addEventListener('click', () => {
 function updateLangText() {
     document.querySelectorAll('[data-lang-text]').forEach(el => {
         const texts = el.dataset.langText.split('|');
-        el.innerHTML = currentLang === 'ru' ? texts[0] : texts[1];
+        if (el.tagName === 'OPTION') {
+            el.textContent = currentLang === 'ru' ? texts[0] : texts[1];
+        } else {
+            el.innerHTML = currentLang === 'ru' ? texts[0] : texts[1];
+        }
     });
 }
 
@@ -875,12 +1219,10 @@ window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
     if (currentScroll > HEADER_HIDE_POINT) {
-        // Скрываем когда листаем вниз
         if (currentScroll > lastScroll) {
             header.classList.add('hidden');
         }
     } else {
-        // Показываем только когда вернулись к началу
         header.classList.remove('hidden');
     }
     
