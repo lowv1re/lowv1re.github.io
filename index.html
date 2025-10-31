@@ -558,7 +558,10 @@ function clearForm(formId) {
 
 // Очистка сообщений об ошибках
 function clearMessages(elementId) {
-    document.getElementById(elementId).innerHTML = '';
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = '';
+    }
 }
 
 window.addEventListener('load', async () => {
@@ -775,12 +778,17 @@ async function verifyEmailCode() {
             return;
         }
         
-        // Проверяем срок
+        // Проверяем срок (используем UTC timestamp для корректного сравнения)
         const expiresAt = new Date(codeData.expires_at);
         const now = new Date();
         
-        if (now > expiresAt) {
-            errorDiv.innerHTML = '<div class="error-msg">Код истёк! Начните регистрацию заново.</div>';
+        console.log('⏰ Проверка времени:');
+        console.log('   Сейчас:', now.toISOString());
+        console.log('   Истекает:', expiresAt.toISOString());
+        console.log('   Разница (минут):', (expiresAt - now) / 60000);
+        
+        if (now.getTime() > expiresAt.getTime()) {
+            errorDiv.innerHTML = '<div class="error-msg">Код истёк! Запросите новый код.</div>';
             btn.disabled = false;
             btn.innerHTML = '<span data-lang-text="Подтвердить|Verify">Подтвердить</span>';
             updateLangText();
@@ -1142,7 +1150,12 @@ async function verifyCode() {
         const expiresAt = new Date(codeData.expires_at);
         const now = new Date();
         
-        if (now > expiresAt) {
+        console.log('⏰ Проверка времени восстановления:');
+        console.log('   Сейчас:', now.toISOString());
+        console.log('   Истекает:', expiresAt.toISOString());
+        console.log('   Разница (минут):', (expiresAt - now) / 60000);
+        
+        if (now.getTime() > expiresAt.getTime()) {
             errorDiv.innerHTML = '<div class="error-msg">Код истёк! Запросите новый.</div>';
             btn.disabled = false;
             btn.innerHTML = '<span data-lang-text="Проверить код|Verify code">Проверить код</span>';
@@ -1330,4 +1343,3 @@ window.addEventListener('scroll', () => {
 </script>
 </body>
 </html>
-
