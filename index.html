@@ -371,6 +371,7 @@ body::after{animation:none;}
 <input type="password" id="registerPassword" placeholder="••••••••">
 </div>
 <button class="form-submit" id="registerBtn" onclick="register()" data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</button>
+<button class="form-submit" id="openVerifyBtn" onclick="switchModal('registerModal', 'verifyEmailModal')" style="display:none;background:linear-gradient(135deg, #00ff88, #00cc66);" data-lang-text="Ввести код подтверждения|Enter verification code">Ввести код подтверждения</button>
 <div class="form-switch">
 <span data-lang-text="Уже есть аккаунт?|Already have an account?">Уже есть аккаунт?</span>
 <a onclick="switchModal('registerModal', 'loginModal')" data-lang-text="Войти|Login">Войти</a>
@@ -609,34 +610,44 @@ async function register() {
         
         if (codeError) throw codeError;
         
-        // Отправляем код через Edge Function
-        const response = await fetch(EDGE_FUNCTION_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            },
-            body: JSON.stringify({
-                email: email,
-                code: code
-            })
-        });
+        // Временно: показываем код в консоли (для теста)
+        console.log('===================');
+        console.log('КОД РЕГИСТРАЦИИ:', code);
+        console.log('EMAIL:', email);
+        console.log('===================');
         
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Ошибка отправки email');
+        // Пытаемся отправить через Edge Function (может не работать из-за CORS)
+        try {
+            const response = await fetch(EDGE_FUNCTION_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                },
+                body: JSON.stringify({
+                    email: email,
+                    code: code
+                })
+            });
+            
+            if (response.ok) {
+                console.log('Email отправлен успешно!');
+            } else {
+                console.warn('Не удалось отправить email, но код сохранен в БД');
+            }
+        } catch (emailError) {
+            console.warn('Ошибка отправки email:', emailError);
+            // Не бросаем ошибку - продолжаем регистрацию
         }
         
         // Сохраняем данные регистрации
         pendingRegistration = { username, email, password };
         
-        errorDiv.innerHTML = '<div class="success-msg">Код отправлен на вашу почту!</div>';
+        errorDiv.innerHTML = '<div class="success-msg">✅ Код сохранен в БД! Проверьте консоль (F12) для кода.<br>Нажмите кнопку ниже чтобы ввести код.</div>';
         
-        setTimeout(() => {
-            closeModal('registerModal');
-            openModal('verifyEmailModal');
-            document.getElementById('verifyCode').focus();
-        }, 1500);
+        // Показываем кнопку "Ввести код"
+        document.getElementById('registerBtn').style.display = 'none';
+        document.getElementById('openVerifyBtn').style.display = 'block';
         
     } catch (error) {
         console.error('Registration error:', error);
@@ -897,6 +908,13 @@ async function buyProduct(productName, price) {
 
 function openModal(modalId) { 
     clearMessages(modalId.replace('Modal', 'Error'));
+    
+    // Сбрасываем видимость кнопок регистрации
+    if (modalId === 'registerModal') {
+        document.getElementById('registerBtn').style.display = 'block';
+        document.getElementById('openVerifyBtn').style.display = 'none';
+    }
+    
     document.getElementById(modalId).classList.add('active'); 
 }
 
