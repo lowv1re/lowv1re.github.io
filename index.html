@@ -12,18 +12,38 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #121212;
+    --bg-tertiary: #1e1e23;
+    --border-color: #2a2a2f;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --accent-blue: #4A90E2;
+}
+
+body.light-theme {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #e8e8e8;
+    --border-color: #d0d0d0;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0a0a0a;
-    color: #ffffff;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
 }
 
 /* Header */
 .header {
-    background: #121212;
-    border-bottom: 1px solid #1e1e23;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--bg-tertiary);
     padding: 0;
     position: sticky;
     top: 0;
@@ -47,7 +67,7 @@ body {
 .logo {
     font-size: 28px;
     font-weight: 700;
-    color: #4A90E2;
+    color: var(--accent-blue);
     text-decoration: none;
     letter-spacing: -0.5px;
     display: flex;
@@ -66,7 +86,7 @@ body {
 }
 
 .nav-links a {
-    color: #b0b0b0;
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
     font-size: 15px;
@@ -74,13 +94,13 @@ body {
 }
 
 .nav-links a:hover {
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .lang-switch {
-    background: #1e1e23;
-    border: 1px solid #2a2a2f;
-    color: #b0b0b0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -90,22 +110,67 @@ body {
 }
 
 .lang-switch:hover {
-    background: #2a2a2f;
-    color: #ffffff;
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Currency switcher */
+.currency-switch {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.currency-switch:hover {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Theme toggle */
+.theme-toggle {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 38px;
+}
+
+.theme-toggle:hover {
+    background: var(--border-color);
+    transform: rotate(15deg);
+}
+
+.controls-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 
 /* Hero Section */
 .hero {
     padding: 100px 20px;
     text-align: center;
-    background: linear-gradient(180deg, #121212 0%, #0a0a0a 100%);
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
 }
 
 .hero h1 {
     font-size: 56px;
     font-weight: 800;
     margin-bottom: 20px;
-    background: linear-gradient(135deg, #4A90E2, #7B68EE);
+    background: linear-gradient(135deg, var(--accent-blue), #7B68EE);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -113,7 +178,7 @@ body {
 
 .hero p {
     font-size: 20px;
-    color: #b0b0b0;
+    color: var(--text-secondary);
     margin-bottom: 40px;
     max-width: 600px;
     margin-left: auto;
@@ -140,7 +205,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #4A90E2, #667eea);
+    background: linear-gradient(135deg, var(--accent-blue), #667eea);
     color: #ffffff;
     box-shadow: 0 4px 20px rgba(74, 144, 226, 0.3);
 }
@@ -151,14 +216,14 @@ body {
 }
 
 .btn-secondary {
-    background: #1e1e23;
-    color: #ffffff;
-    border: 1px solid #2a2a2f;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-    background: #2a2a2f;
-    border-color: #4A90E2;
+    background: var(--border-color);
+    border-color: var(--accent-blue);
 }
 
 /* Games Section */
@@ -175,15 +240,33 @@ body {
 
 .games-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     max-width: 1400px;
     margin: 0 auto;
 }
 
+@media (max-width: 1200px) {
+    .games-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .game-card {
-    background: #121212;
-    border: 1px solid #1e1e23;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
     border-radius: 16px;
     padding: 24px;
     transition: all 0.3s;
@@ -192,7 +275,7 @@ body {
 
 .game-card:hover {
     transform: translateY(-4px);
-    border-color: #4A90E2;
+    border-color: var(--accent-blue);
     box-shadow: 0 8px 32px rgba(74, 144, 226, 0.15);
 }
 
@@ -206,6 +289,21 @@ body {
     justify-content: center;
     font-size: 36px;
     margin-bottom: 20px;
+    position: relative;
+}
+
+.game-icon::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 15px;
+    background: var(--accent-blue);
+    filter: blur(12px);
+    opacity: 0.6;
+    border-radius: 50%;
 }
 
 .game-card h3 {
@@ -254,8 +352,8 @@ body {
 }
 
 .modal-content {
-    background: #121212;
-    border: 1px solid #1e1e23;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
     border-radius: 20px;
     max-width: 480px;
     width: 100%;
@@ -340,24 +438,24 @@ body {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #b0b0b0;
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
 .form-group input {
     width: 100%;
     padding: 14px 16px;
-    background: #1e1e23;
-    border: 1px solid #2a2a2f;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 15px;
     transition: all 0.3s;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #4A90E2;
+    border-color: var(--accent-blue);
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
@@ -368,7 +466,7 @@ body {
 .form-submit {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, #4A90E2, #667eea);
+    background: linear-gradient(135deg, var(--accent-blue), #667eea);
     border: none;
     border-radius: 10px;
     color: #ffffff;
@@ -392,12 +490,12 @@ body {
 .form-switch {
     text-align: center;
     margin-top: 20px;
-    color: #b0b0b0;
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
 .form-switch a {
-    color: #4A90E2;
+    color: var(--accent-blue);
     text-decoration: none;
     cursor: pointer;
     font-weight: 600;
@@ -446,32 +544,174 @@ body {
 
 /* Profile */
 .profile-container {
-    max-width: 1200px;
-    margin: 40px auto;
+    max-width: 800px;
+    margin: 60px auto;
     padding: 0 20px;
 }
 
+.profile-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
 .profile-header {
-    background: #121212;
-    border: 1px solid #1e1e23;
-    border-radius: 20px;
-    padding: 40px;
-    margin-bottom: 30px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    gap: 24px;
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--accent-blue), #7B68EE);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.profile-info {
+    flex: 1;
 }
 
 .profile-info h2 {
     font-size: 32px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    color: var(--text-primary);
 }
 
 .profile-info p {
-    color: #b0b0b0;
+    color: var(--text-secondary);
     font-size: 16px;
+    margin: 4px 0;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-box {
+    background: var(--bg-tertiary);
+    padding: 24px;
+    border-radius: 16px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.stat-box:hover {
+    transform: translateY(-4px);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    color: var(--accent-blue);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+@media (max-width: 768px) {
+    .profile-section {
+        padding: 32px 24px;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* User info in header */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.user-info:hover {
+    background: var(--border-color);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent-blue), #7B68EE);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+}
+
+.user-name {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.auth-btn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, var(--accent-blue), #7B68EE);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
 
 .balance-card {
@@ -527,7 +767,15 @@ body {
 <a href="#services" data-lang-text="Услуги|Services">Услуги</a>
 <a href="#contact" data-lang-text="Контакты|Contact">Контакты</a>
 <div id="authSection"></div>
+<div class="controls-group">
+<select class="currency-switch" id="currencySwitch">
+<option value="RUB">₽ RUB</option>
+<option value="USD">$ USD</option>
+<option value="EUR">€ EUR</option>
+</select>
+<button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
 <div class="lang-switch" id="langSwitch">RU</div>
+</div>
 </div>
 </div>
 </div>
@@ -537,7 +785,7 @@ body {
 <div class="container">
 <h1 id="heroTitle" data-lang-text="LOWV1RE MARKET|LOWV1RE MARKET">LOWV1RE MARKET</h1>
 <p id="heroDesc" data-lang-text="Донат. Аккаунты. Прокачка. Всё под твоим контролем.|Donations. Accounts. Boosting. Everything under your control.">Донат. Аккаунты. Прокачка. Всё под твоим контролем.</p>
-<div class="cta-buttons">
+<div class="cta-buttons" id="heroButtons">
 <button class="btn btn-primary" onclick="openModal('loginModal')" data-lang-text="Войти|Login">Войти</button>
 <button class="btn btn-secondary" onclick="openModal('registerModal')" data-lang-text="Регистрация|Register">Регистрация</button>
 </div>
@@ -722,6 +970,70 @@ body {
 </div>
 </div>
 
+<div class="game-card card-lol">
+<div>
+<div class="game-icon">🏆</div>
+<h3 data-lang-text="League of Legends|League of Legends">League of Legends</h3>
+<p data-lang-text="RP, скины, буст рейтинга|RP, skins, rank boosting">RP, скины, буст рейтинга</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">200₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.2</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.0</div></div>
+</div>
+<button class="btn" onclick="buyProduct('League of Legends', 200)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<div class="game-card card-apex">
+<div>
+<div class="game-icon">🎯</div>
+<h3 data-lang-text="Apex Legends|Apex Legends">Apex Legends</h3>
+<p data-lang-text="Apex монеты, легенды, батл-пасс|Apex Coins, legends, battle pass">Apex монеты, легенды, батл-пасс</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">180₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.0</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.8</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Apex Legends', 180)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<div class="game-card card-dota">
+<div>
+<div class="game-icon">⚔️</div>
+<h3 data-lang-text="Dota 2|Dota 2">Dota 2</h3>
+<p data-lang-text="Аркан, батл-пасс, косметика|Arcanas, battle pass, cosmetics">Аркан, батл-пасс, косметика</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">220₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.4</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.2</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Dota 2', 220)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<div class="game-card card-overwatch">
+<div>
+<div class="game-icon">🎮</div>
+<h3 data-lang-text="Overwatch 2|Overwatch 2">Overwatch 2</h3>
+<p data-lang-text="Монеты, скины, премиум|Coins, skins, premium">Монеты, скины, премиум</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">150₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.6</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.5</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Overwatch 2', 150)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -742,8 +1054,8 @@ body {
 <h2 class="modal-title" data-lang-text="Вход в аккаунт|Login">Вход в аккаунт</h2>
 <div id="loginError"></div>
 <div class="form-group">
-<label data-lang-text="Email|Email">Email</label>
-<input type="email" id="loginEmail" placeholder="your@email.com" oninput="validateEmailInput(this, 'loginEmailError')">
+<label data-lang-text="Email или никнейм|Email or username">Email или никнейм</label>
+<input type="text" id="loginEmail" placeholder="your@email.com или username">
 <div id="loginEmailError"></div>
 </div>
 <div class="form-group">
@@ -872,6 +1184,21 @@ let currentLang = 'ru';
 let recoveryEmail = '';
 let verifiedCode = '';
 let pendingRegistration = null;
+let currentCurrency = 'RUB';
+let currentTheme = 'dark';
+
+// Курсы валют (примерные)
+const currencyRates = {
+    RUB: 1,
+    USD: 0.011,
+    EUR: 0.010
+};
+
+const currencySymbols = {
+    RUB: '₽',
+    USD: '$',
+    EUR: '€'
+};
 
 // Отправка email через Edge Function
 async function sendEmailCode(email, code, type = 'registration') {
@@ -971,9 +1298,90 @@ function clearMessages(elementId) {
     }
 }
 
+// Функция для обновления баланса с учетом валюты
+function updateBalance() {
+    if (!currentUser) return;
+    const balance = currentUser.balance * currencyRates[currentCurrency];
+    const symbol = currencySymbols[currentCurrency];
+    const formattedBalance = currentCurrency === 'RUB' ? 
+        `${Math.round(balance)}${symbol}` : 
+        `${symbol}${balance.toFixed(2)}`;
+    document.getElementById('profileBalance').textContent = formattedBalance;
+}
+
+// Функция для переключения валюты
+function changeCurrency() {
+    const select = document.getElementById('currencySwitch');
+    currentCurrency = select.value;
+    localStorage.setItem('currency', currentCurrency);
+    
+    // Обновляем баланс в профиле
+    updateBalance();
+    
+    // Обновляем все цены на странице
+    updateAllPrices();
+}
+
+// Функция для обновления всех цен на странице
+function updateAllPrices() {
+    const priceElements = document.querySelectorAll('.price-value');
+    priceElements.forEach(el => {
+        const text = el.textContent;
+        // Извлекаем базовую цену в рублях
+        const rubMatch = text.match(/(\d+)₽/);
+        if (rubMatch) {
+            const rubPrice = parseInt(rubMatch[1]);
+            const convertedPrice = rubPrice * currencyRates[currentCurrency];
+            const symbol = currencySymbols[currentCurrency];
+            el.textContent = currentCurrency === 'RUB' ? 
+                `${Math.round(convertedPrice)}${symbol}` : 
+                `${symbol}${convertedPrice.toFixed(2)}`;
+        }
+    });
+}
+
+// Функция для переключения темы
+function toggleTheme() {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.classList.toggle('light-theme');
+    localStorage.setItem('theme', currentTheme);
+    
+    // Обновляем иконку
+    const themeIcon = document.getElementById('themeToggle');
+    themeIcon.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+}
+
+// Загрузка сохраненных настроек
+function loadSettings() {
+    // Загрузка валюты
+    const savedCurrency = localStorage.getItem('currency');
+    if (savedCurrency) {
+        currentCurrency = savedCurrency;
+        document.getElementById('currencySwitch').value = savedCurrency;
+    }
+    
+    // Загрузка темы
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        currentTheme = savedTheme;
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.getElementById('themeToggle').textContent = '☀️';
+        }
+    }
+    
+    // Обновляем цены
+    updateAllPrices();
+}
+
 window.addEventListener('load', async () => {
+    loadSettings();
     await checkAuth();
     updateLangText();
+    
+    // Добавляем обработчики
+    document.getElementById('currencySwitch').addEventListener('change', changeCurrency);
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 });
 
 async function checkAuth() {
@@ -992,6 +1400,9 @@ async function checkAuth() {
 function showAuthButton() {
     document.getElementById('authSection').innerHTML = '<button class="auth-btn" onclick="openModal(\'loginModal\')" data-lang-text="Войти|Login">Войти</button>';
     document.getElementById('profileSection').style.display = 'none';
+    // Показываем кнопки входа в hero секции
+    const heroButtons = document.getElementById('heroButtons');
+    if (heroButtons) heroButtons.style.display = 'flex';
     updateLangText();
 }
 
@@ -1002,7 +1413,11 @@ function showUserProfile() {
     document.getElementById('profileUsername').textContent = currentUser.username;
     document.getElementById('profileEmail').textContent = currentUser.email;
     document.getElementById('profileUrl').textContent = `lowv1re.eu/user${currentUser.id}`;
-    document.getElementById('profileBalance').textContent = `${currentUser.balance}₽`;
+    // Обновляем баланс с учетом текущей валюты
+    updateBalance();
+    // Скрываем кнопки входа в hero секции
+    const heroButtons = document.getElementById('heroButtons');
+    if (heroButtons) heroButtons.style.display = 'none';
     const date = new Date(currentUser.created_at);
     document.getElementById('profileDate').textContent = date.toLocaleDateString('ru-RU');
 }
@@ -1311,33 +1726,49 @@ async function resendVerificationCode() {
 }
 
 async function login() {
-    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const identifier = document.getElementById('loginEmail').value.trim().toLowerCase();
     const password = document.getElementById('loginPassword').value;
     const errorDiv = document.getElementById('loginError');
     
     errorDiv.innerHTML = '';
     
-    if (!email || !password) {
+    if (!identifier || !password) {
         errorDiv.innerHTML = '<div class="error-msg">Заполните все поля!</div>';
         return;
     }
     
-    if (!isValidEmail(email)) {
-        errorDiv.innerHTML = '<div class="error-msg">Введите корректный email!</div>';
-        return;
-    }
-    
     try {
+        let email = identifier;
+        
+        // Проверяем, это email или username
+        if (!identifier.includes('@')) {
+            // Это username, ищем email в базе
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('email')
+                .eq('username', identifier)
+                .maybeSingle();
+            
+            if (userError || !userData) {
+                errorDiv.innerHTML = '<div class="error-msg">Пользователь не найден!</div>';
+                return;
+            }
+            
+            email = userData.email;
+        }
+        
+        // Входим через Supabase Auth
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email: email, 
             password: password
         });
         
         if (authError) {
-            errorDiv.innerHTML = '<div class="error-msg">Неверный email или пароль!</div>';
+            errorDiv.innerHTML = '<div class="error-msg">Неверный логин или пароль!</div>';
             return;
         }
         
+        // Получаем данные пользователя из базы
         const { data: userData, error: dbError } = await supabase
             .from('users')
             .select('*')
@@ -1352,6 +1783,7 @@ async function login() {
         currentUser = userData;
         closeModal('loginModal');
         showUserProfile();
+        updateLangText();
     } catch (error) {
         errorDiv.innerHTML = '<div class="error-msg">Ошибка входа! Попробуйте снова.</div>';
         console.error(error);
