@@ -238,6 +238,56 @@ body {
     margin-bottom: 50px;
 }
 
+/* Game Search */
+.game-search-container {
+    max-width: 600px;
+    margin: 0 auto 40px;
+    position: relative;
+}
+
+.game-search-input {
+    width: 100%;
+    padding: 16px 50px 16px 20px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--bg-tertiary);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.game-search-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
+}
+
+.game-search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.game-search-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+    font-size: 18px;
+}
+
+.no-results-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
 .games-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -695,6 +745,7 @@ body {
     color: var(--text-primary);
     font-weight: 600;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .auth-btn {
@@ -730,6 +781,76 @@ body {
 .balance-card h3 {
     font-size: 36px;
     font-weight: 700;
+}
+
+/* Footer / Contact Section */
+.footer {
+    max-width: 800px;
+    margin: 80px auto 40px;
+    padding: 48px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.footer h3 {
+    font-size: 32px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--accent-blue), #7B68EE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.footer p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 32px;
+}
+
+.contact {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.contact a {
+    padding: 14px 28px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.contact a:hover {
+    background: var(--accent-blue);
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 32px 24px;
+        margin: 60px 20px 40px;
+    }
+    
+    .footer h3 {
+        font-size: 24px;
+    }
+    
+    .contact {
+        flex-direction: column;
+    }
 }
 
 /* Responsive */
@@ -824,7 +945,20 @@ body {
 
 <div class="container" id="games">
 <h2 class="section-title" data-lang-text="🎮 Популярные игры|🎮 Popular Games">🎮 Популярные игры</h2>
-<div class="games-grid">
+
+<div class="game-search-container">
+<input 
+    type="text" 
+    id="gameSearchInput" 
+    class="game-search-input" 
+    placeholder="Поиск игры... (например: Dota, CS:GO, Fortnite)" 
+    data-lang-text="Поиск игры...|Search game..."
+    oninput="searchGames()"
+>
+<span class="game-search-icon">🔍</span>
+</div>
+
+<div class="games-grid" id="gamesGrid">
 
 <div class="game-card card-brawl">
 <div>
@@ -1034,9 +1168,90 @@ body {
 </div>
 </div>
 
+<div class="game-card card-cod">
+<div>
+<div class="game-icon">🎖️</div>
+<h3 data-lang-text="Call of Duty|Call of Duty">Call of Duty</h3>
+<p data-lang-text="COD Points, скины оружия, батл-пасс|COD Points, weapon skins, battle pass">COD Points, скины оружия, батл-пасс</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">280₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$3.1</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.8</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Call of Duty', 280)" data-lang-text="Купить|Buy">Купить</button>
 </div>
 </div>
 
+<div class="game-card card-r6">
+<div>
+<div class="game-icon">⚡</div>
+<h3 data-lang-text="Rainbow Six Siege|Rainbow Six Siege">Rainbow Six Siege</h3>
+<p data-lang-text="R6 Credits, операторы, косметика|R6 Credits, operators, cosmetics">R6 Credits, операторы, косметика</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">240₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$2.6</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€2.4</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Rainbow Six Siege', 240)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<div class="game-card card-rocket">
+<div>
+<div class="game-icon">🚗</div>
+<h3 data-lang-text="Rocket League|Rocket League">Rocket League</h3>
+<p data-lang-text="Credits, машины, декали, ракетный пасс|Credits, cars, decals, rocket pass">Credits, машины, декали, ракетный пасс</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">120₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.3</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.2</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Rocket League', 120)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<div class="game-card card-pubg">
+<div>
+<div class="game-icon">🎯</div>
+<h3 data-lang-text="PUBG|PUBG">PUBG</h3>
+<p data-lang-text="UC, скины оружия, королевский пасс|UC, weapon skins, royale pass">UC, скины оружия, королевский пасс</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">160₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.8</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€1.6</div></div>
+</div>
+<button class="btn" onclick="buyProduct('PUBG', 160)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+<div class="game-card card-fallguys">
+<div>
+<div class="game-icon">🤸</div>
+<h3 data-lang-text="Fall Guys|Fall Guys">Fall Guys</h3>
+<p data-lang-text="Show-Bucks, костюмы, фейм-пасс|Show-Bucks, costumes, fame pass">Show-Bucks, костюмы, фейм-пасс</p>
+</div>
+<div>
+<div class="price-row">
+<div class="price-item"><div class="price-label">RUB</div><div class="price-value">90₽</div></div>
+<div class="price-item"><div class="price-label">USD</div><div class="price-value">$1.0</div></div>
+<div class="price-item"><div class="price-label">EUR</div><div class="price-value">€0.9</div></div>
+</div>
+<button class="btn" onclick="buyProduct('Fall Guys', 90)" data-lang-text="Купить|Buy">Купить</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="container">
 <div class="footer" id="contact">
 <h3 data-lang-text="🎃 Связаться со мной|🎃 Contact Me">🎃 Связаться со мной</h3>
 <p data-lang-text="Есть вопросы? Пиши в Telegram или на Email!|Questions? DM on Telegram or Email!">Есть вопросы? Пиши в Telegram или на Email!</p>
@@ -1044,7 +1259,7 @@ body {
 <a href="https://t.me/lowv1rre" target="_blank">📱 @lowv1rre</a>
 <a href="mailto:lowv1re1@gmail.com">📧 lowv1re1@gmail.com</a>
 </div>
-<p style="margin-top:30px;color:#888;font-size:14px;">© 2024 LOWV1RE. Все права защищены.</p>
+<p style="margin-top:30px;color:var(--text-secondary);font-size:14px;">© 2024 LOWV1RE. Все права защищены.</p>
 </div>
 </div>
 
@@ -1349,6 +1564,50 @@ function toggleTheme() {
     // Обновляем иконку
     const themeIcon = document.getElementById('themeToggle');
     themeIcon.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+}
+
+// Функция поиска игр
+function searchGames() {
+    const searchInput = document.getElementById('gameSearchInput');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const gameCards = document.querySelectorAll('.game-card');
+    let visibleCount = 0;
+    
+    gameCards.forEach(card => {
+        const gameName = card.querySelector('h3').textContent.toLowerCase();
+        const gameDescription = card.querySelector('p').textContent.toLowerCase();
+        
+        // Проверяем совпадение в названии или описании
+        if (gameName.includes(searchTerm) || gameDescription.includes(searchTerm)) {
+            card.style.display = 'flex';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Показываем/скрываем сообщение "Ничего не найдено"
+    let noResultsMsg = document.getElementById('noResultsMessage');
+    
+    if (visibleCount === 0 && searchTerm !== '') {
+        if (!noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.id = 'noResultsMessage';
+            noResultsMsg.className = 'no-results';
+            noResultsMsg.innerHTML = `
+                <div class="no-results-icon">😢</div>
+                <div data-lang-text="Игры не найдены. Попробуйте другой запрос.|No games found. Try another search.">
+                    Игры не найдены. Попробуйте другой запрос.
+                </div>
+            `;
+            document.getElementById('gamesGrid').parentElement.appendChild(noResultsMsg);
+        }
+        noResultsMsg.style.display = 'block';
+    } else {
+        if (noResultsMsg) {
+            noResultsMsg.style.display = 'none';
+        }
+    }
 }
 
 // Загрузка сохраненных настроек
