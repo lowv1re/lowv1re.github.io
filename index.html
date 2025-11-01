@@ -160,6 +160,106 @@ body {
     align-items: center;
 }
 
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--text-primary);
+    transition: all 0.3s;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--border-color);
+}
+
+/* Mobile menu overlay */
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 9998;
+}
+
+.mobile-menu-overlay.active {
+    display: block;
+}
+
+/* Mobile menu panel */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100%;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    z-index: 9999;
+    padding: 80px 24px 24px;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.mobile-menu.active {
+    right: 0;
+}
+
+.mobile-menu-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 32px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.mobile-menu-item {
+    margin-bottom: 24px;
+}
+
+.mobile-menu-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.mobile-menu .currency-switch,
+.mobile-menu .lang-switch,
+.mobile-menu .theme-toggle {
+    width: 100%;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .mobile-menu {
+        display: block;
+    }
+}
+
 /* Hero Section */
 .hero {
     padding: 100px 20px;
@@ -910,7 +1010,37 @@ body {
 <div class="lang-switch" id="langSwitch">RU</div>
 </div>
 </div>
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">☰</button>
 </div>
+</div>
+</div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+<button class="mobile-menu-close" onclick="closeMobileMenu()">×</button>
+
+<div class="mobile-menu-item">
+<div class="mobile-menu-label" data-lang-text="Валюта|Currency">Валюта</div>
+<select class="currency-switch" id="currencySwitchMobile" onchange="changeCurrency()">
+<option value="RUB">₽ RUB</option>
+<option value="USD">$ USD</option>
+<option value="EUR">€ EUR</option>
+</select>
+</div>
+
+<div class="mobile-menu-item">
+<div class="mobile-menu-label" data-lang-text="Тема|Theme">Тема</div>
+<button class="theme-toggle" id="themeToggleMobile" style="width:100%;justify-content:center;" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+</div>
+
+<div class="mobile-menu-item">
+<div class="mobile-menu-label" data-lang-text="Язык|Language">Язык</div>
+<div class="lang-switch" id="langSwitchMobile" style="width:100%;justify-content:center;cursor:pointer;">RU</div>
+</div>
+
+<div class="mobile-menu-item" style="margin-top:32px;">
+<div id="authSectionMobile"></div>
 </div>
 </div>
 
@@ -1339,15 +1469,9 @@ body {
 <div class="modal" id="forgotModal">
 <div class="modal-content">
 <span class="modal-close" onclick="closeModal('forgotModal')">&times;</span>
-<h2 class="modal-title" data-lang-text="Восстановление|Recovery">Восстановление</h2>
+<h2 class="modal-title" data-lang-text="Восстановление пароля|Password Recovery">Восстановление пароля</h2>
+<p style="color:var(--text-secondary);margin-bottom:24px;text-align:center;" data-lang-text="Введите email для получения кода восстановления|Enter email to receive recovery code">Введите email для получения кода восстановления</p>
 <div id="forgotError"></div>
-<div class="form-group">
-<label data-lang-text="Что вы забыли?|What did you forget?">Что вы забыли?</label>
-<select id="forgotType">
-<option value="password" data-lang-text="Пароль|Password">Пароль</option>
-<option value="username" data-lang-text="Имя пользователя|Username">Имя пользователя</option>
-</select>
-</div>
 <div class="form-group">
 <label data-lang-text="Ваш Email|Your Email">Ваш Email</label>
 <input type="email" id="forgotEmail" placeholder="your@email.com" autocomplete="off" oninput="validateEmailInput(this, 'forgotEmailError')">
@@ -1563,15 +1687,63 @@ function updateAllPrices() {
     });
 }
 
+// Мобильное меню
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+}
+
+function closeMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    menu.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Синхронизация мобильных элементов с desktop
+function syncMobileControls() {
+    // Синхронизация валюты
+    const currencyMobile = document.getElementById('currencySwitchMobile');
+    if (currencyMobile) {
+        currencyMobile.value = currentCurrency;
+    }
+    
+    // Синхронизация темы
+    const themeMobile = document.getElementById('themeToggleMobile');
+    if (themeMobile) {
+        themeMobile.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+    }
+    
+    // Синхронизация языка
+    const langMobile = document.getElementById('langSwitchMobile');
+    if (langMobile) {
+        langMobile.textContent = currentLang.toUpperCase();
+    }
+    
+    // Синхронизация authSection
+    const authMobile = document.getElementById('authSectionMobile');
+    const authDesktop = document.getElementById('authSection');
+    if (authMobile && authDesktop) {
+        authMobile.innerHTML = authDesktop.innerHTML;
+    }
+}
+
 // Функция для переключения темы
 function toggleTheme() {
     currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
     document.body.classList.toggle('light-theme');
     localStorage.setItem('theme', currentTheme);
     
-    // Обновляем иконку
+    // Обновляем иконку в обоих местах
     const themeIcon = document.getElementById('themeToggle');
-    themeIcon.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+    const themeIconMobile = document.getElementById('themeToggleMobile');
+    const icon = currentTheme === 'dark' ? '🌙' : '☀️';
+    if (themeIcon) themeIcon.textContent = icon;
+    if (themeIconMobile) themeIconMobile.textContent = icon;
 }
 
 // Функция поиска игр
@@ -1638,12 +1810,16 @@ function loadSettings() {
     
     // Обновляем цены
     updateAllPrices();
+    
+    // Синхронизируем мобильное меню
+    setTimeout(() => syncMobileControls(), 100);
 }
 
 window.addEventListener('load', async () => {
     loadSettings();
     await checkAuth();
     updateLangText();
+    syncMobileControls();
     
     // Добавляем обработчики
     document.getElementById('currencySwitch').addEventListener('change', changeCurrency);
@@ -1671,6 +1847,7 @@ function showAuthButton() {
     const heroButtons = document.getElementById('heroButtons');
     if (heroButtons) heroButtons.style.display = 'flex';
     updateLangText();
+    syncMobileControls();
 }
 
 function showUserProfile() {
@@ -1687,6 +1864,7 @@ function showUserProfile() {
     if (heroButtons) heroButtons.style.display = 'none';
     const date = new Date(currentUser.created_at);
     document.getElementById('profileDate').textContent = date.toLocaleDateString('ru-RU');
+    syncMobileControls();
 }
 
 function toggleProfile() {
@@ -2416,8 +2594,21 @@ const langSwitch = document.getElementById('langSwitch');
 langSwitch.addEventListener('click', () => {
     currentLang = currentLang === 'ru' ? 'en' : 'ru';
     langSwitch.textContent = currentLang.toUpperCase();
+    const langSwitchMobile = document.getElementById('langSwitchMobile');
+    if (langSwitchMobile) langSwitchMobile.textContent = currentLang.toUpperCase();
     updateLangText();
 });
+
+// Обработчик для мобильного переключателя языка
+const langSwitchMobile = document.getElementById('langSwitchMobile');
+if (langSwitchMobile) {
+    langSwitchMobile.addEventListener('click', () => {
+        currentLang = currentLang === 'ru' ? 'en' : 'ru';
+        langSwitch.textContent = currentLang.toUpperCase();
+        langSwitchMobile.textContent = currentLang.toUpperCase();
+        updateLangText();
+    });
+}
 
 function updateLangText() {
     document.querySelectorAll('[data-lang-text]').forEach(el => {
