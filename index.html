@@ -2023,12 +2023,25 @@ window.addEventListener('load', async () => {
     
     // Затем загружаем настройки (они могут переопределить геолокацию)
     loadSettings();
+    
+    // КРИТИЧЕСКИ ВАЖНО: проверяем есть ли hash от OAuth redirect
+    const hash = window.location.hash;
+    console.log('🔍 Current hash:', hash);
+    
+    // Если есть access_token в hash - это OAuth redirect
+    if (hash.includes('access_token')) {
+        console.log('✅ Detected OAuth redirect - waiting for auth...');
+        // Даём время Supabase обработать токен
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
     await checkAuth();
     
     // Слушаем изменения auth state (для Google OAuth redirect)
     supabase.auth.onAuthStateChange(async (event, session) => {
-        console.log('🔐 Auth state changed:', event);
+        console.log('🔐 Auth state changed:', event, session ? 'Session exists' : 'No session');
         if (event === 'SIGNED_IN' && session) {
+            console.log('✅ SIGNED_IN event - rechecking auth');
             await checkAuth();
         } else if (event === 'SIGNED_OUT') {
             showAuthButton();
@@ -2044,25 +2057,53 @@ window.addEventListener('load', async () => {
 });
 
 async function checkAuth() {
+    console.log('🔍 Checking auth...');
     const { data: { user } } = await supabase.auth.getUser();
+    
     if (user) {
+        console.log('✅ User found:', user.email);
         const { data: userData } = await supabase.from('users').select('*').eq('email', user.email).maybeSingle();
+        
         if (userData) {
+            console.log('✅ User data found in DB:', userData.username);
             currentUser = userData;
             showUserProfile();
-        } else if (user.app_metadata.provider === 'google') {
-            // Google пользователь впервые - показываем модалку выбора username
-            pendingGoogleUser = user;
-            const avatar = user.email.charAt(0).toUpperCase();
-            document.getElementById('googleAvatarLetter').textContent = avatar;
-            document.getElementById('googleAvatarLetter').style.display = 'block';
-            document.getElementById('googleAvatarPreview').style.display = 'none';
-            document.getElementById('googleUsername').value = user.email.split('@')[0];
-            uploadedAvatar = null; // Сбрасываем загруженную аватарку
-            openModal('googleUsernameModal');
-            console.log('👤 Новый Google пользователь - требуется выбор username');
+        } else {
+            console.log('❌ User NOT found in DB');
+            
+            // Проверяем провайдера
+            if (user.app_metadata.provider === 'google' || !userData) {
+                // Google пользователь впервые ИЛИ пользователь без записи в БД
+                console.log('🔐 Google пользователь - показываем модалку выбора username');
+                pendingGoogleUser = user;
+                
+                // Небольшая задержка чтобы DOM успел загрузиться
+                setTimeout(() => {
+                    const avatar = user.email.charAt(0).toUpperCase();
+                    const letterEl = document.getElementById('googleAvatarLetter');
+                    const previewEl = document.getElementById('googleAvatarPreview');
+                    const usernameEl = document.getElementById('googleUsername');
+                    
+                    if (letterEl && previewEl && usernameEl) {
+                        letterEl.textContent = avatar;
+                        letterEl.style.display = 'block';
+                        previewEl.style.display = 'none';
+                        usernameEl.value = user.email.split('@')[0];
+                        uploadedAvatar = null;
+                        
+                        console.log('✅ Открываем модалку googleUsernameModal');
+                        openModal('googleUsernameModal');
+                    } else {
+                        console.error('❌ Элементы модалки не найдены!');
+                    }
+                }, 500);
+            }
         }
     } else {
+        console.log('❌ No user found');
+        showAuthButton();
+    }
+}
         showAuthButton();
     }
 }
