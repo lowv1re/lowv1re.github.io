@@ -6,7 +6,8 @@
 <title>LOWV1RE - Магазин игровых услуг</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='400' fill='%230a0a0a' rx='40'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%235ba3f5'/%3E%3Cstop offset='100%25' style='stop-color:%234A90E2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M 120 80 L 120 320 L 300 320 L 300 260 L 190 260 L 190 220 L 230 260 L 190 260 L 190 80 Z' fill='url(%23g)' stroke='%235ba3f5' stroke-width='4'/%3E%3Cpath d='M 190 220 L 230 260 L 190 260 Z' fill='%230a0a0a'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<!-- CLOUDFLARE TURNSTILE ВРЕМЕННО ОТКЛЮЧЕН -->
+<!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
 <style>
 * {
     margin: 0;
@@ -1473,7 +1474,8 @@ body {
 <label data-lang-text="Пароль|Password">Пароль</label>
 <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="new-password">
 </div>
-<div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onLoginTurnstileSuccess"></div>
+<!-- TURNSTILE ВРЕМЕННО ОТКЛЮЧЕН -->
+<!-- <div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onLoginTurnstileSuccess"></div> -->
 <button class="form-submit" onclick="login()" data-lang-text="Войти|Login">Войти</button>
 
 <div class="divider" data-lang-text="или|or">или</div>
@@ -1517,7 +1519,8 @@ body {
 <label data-lang-text="Пароль|Password">Пароль</label>
 <input type="password" id="registerPassword" placeholder="••••••••" autocomplete="new-password">
 </div>
-<div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onRegisterTurnstileSuccess"></div>
+<!-- TURNSTILE ВРЕМЕННО ОТКЛЮЧЕН -->
+<!-- <div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onRegisterTurnstileSuccess"></div> -->
 <button class="form-submit" id="registerBtn" onclick="register()" data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</button>
 
 <div class="divider" data-lang-text="или|or">или</div>
@@ -2143,11 +2146,11 @@ async function register() {
         return;
     }
     
-    // Проверка Turnstile
-    if (!registerTurnstileToken) {
-        errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
-        return;
-    }
+    // Проверка Turnstile (ВРЕМЕННО ОТКЛЮЧЕНО)
+    // if (!registerTurnstileToken) {
+    //     errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
+    //     return;
+    // }
     
     // Блокируем кнопку и показываем загрузку
     btn.disabled = true;
@@ -2546,11 +2549,11 @@ async function login() {
         return;
     }
     
-    // Проверка Turnstile
-    if (!loginTurnstileToken) {
-        errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
-        return;
-    }
+    // Проверка Turnstile (ВРЕМЕННО ОТКЛЮЧЕНО)
+    // if (!loginTurnstileToken) {
+    //     errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
+    //     return;
+    // }
     
     try {
         let email = identifier;
