@@ -2038,10 +2038,16 @@ window.addEventListener('load', async () => {
     
     // Слушаем изменения auth state для Google OAuth
     supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('🔐 [onAuthStateChange] Event:', event);
+        console.log('🔐 [onAuthStateChange] Session exists:', !!session);
+        
         if (event === 'SIGNED_IN' && session) {
-            console.log('🔐 Auth state: SIGNED_IN');
+            console.log('✅ [onAuthStateChange] SIGNED_IN detected, calling checkAuth...');
             // Перепроверяем auth после Google OAuth redirect
             await checkAuth();
+        } else if (event === 'SIGNED_OUT') {
+            console.log('🚪 [onAuthStateChange] SIGNED_OUT detected');
+            showAuthButton();
         }
     });
     
@@ -2054,13 +2060,29 @@ window.addEventListener('load', async () => {
 });
 
 async function checkAuth() {
+    console.log('🔍 [checkAuth] Starting...');
+    
     const { data: { user } } = await supabase.auth.getUser();
+    console.log('🔍 [checkAuth] User from Supabase:', user ? user.email : 'NO USER');
+    
     if (user) {
-        const { data: userData } = await supabase.from('users').select('*').eq('email', user.email).maybeSingle();
+        console.log('🔍 [checkAuth] Provider:', user.app_metadata?.provider);
+        console.log('🔍 [checkAuth] Checking database for email:', user.email);
+        
+        const { data: userData, error: dbError } = await supabase.from('users').select('*').eq('email', user.email).maybeSingle();
+        
+        if (dbError) {
+            console.error('❌ [checkAuth] Database error:', dbError);
+        }
+        
+        console.log('🔍 [checkAuth] User data from DB:', userData ? userData.username : 'NOT FOUND');
+        
         if (userData) {
+            console.log('✅ [checkAuth] User exists in DB, showing profile');
             currentUser = userData;
             showUserProfile();
         } else if (user.app_metadata.provider === 'google') {
+            console.log('🔐 [checkAuth] Google user without DB record - showing modal');
             // Google пользователь впервые - показываем модалку выбора username
             pendingGoogleUser = user;
             
@@ -2068,23 +2090,61 @@ async function checkAuth() {
             const googleAvatar = user.user_metadata?.avatar_url || user.user_metadata?.picture;
             const avatarLetter = user.email.charAt(0).toUpperCase();
             
-            const imgEl = document.getElementById('googleAvatarImg');
-            const letterEl = document.getElementById('googleAvatarLetter');
+            console.log('🔍 [checkAuth] Google avatar URL:', googleAvatar || 'NO AVATAR');
+            console.log('🔍 [checkAuth] Avatar letter:', avatarLetter);
             
-            if (googleAvatar) {
-                // Показываем аватарку из Google
-                imgEl.src = googleAvatar;
-                imgEl.style.display = 'block';
-                letterEl.style.display = 'none';
-            } else {
-                // Показываем букву
-                letterEl.textContent = avatarLetter;
-                letterEl.style.display = 'block';
-                imgEl.style.display = 'none';
-            }
-            
-            document.getElementById('googleUsername').value = user.email.split('@')[0];
-            openModal('googleUsernameModal');
+            // Небольшая задержка для загрузки DOM
+            setTimeout(() => {
+                console.log('🔍 [checkAuth] Opening modal after timeout...');
+                
+                const imgEl = document.getElementById('googleAvatarImg');
+                const letterEl = document.getElementById('googleAvatarLetter');
+                const usernameEl = document.getElementById('googleUsername');
+                
+                console.log('🔍 [checkAuth] Elements check:', {
+                    imgEl: imgEl ? 'FOUND' : 'NOT FOUND',
+                    letterEl: letterEl ? 'FOUND' : 'NOT FOUND',
+                    usernameEl: usernameEl ? 'FOUND' : 'NOT FOUND'
+                });
+                
+                if (imgEl && letterEl && usernameEl) {
+                    if (googleAvatar) {
+                        // Показываем аватарку из Google
+                        console.log('✅ [checkAuth] Setting Google avatar');
+                        imgEl.src = googleAvatar;
+                        imgEl.style.display = 'block';
+                        letterEl.style.display = 'none';
+                    } else {
+                        // Показываем букву
+                        console.log('✅ [checkAuth] Setting avatar letter');
+                        letterEl.textContent = avatarLetter;
+                        letterEl.style.display = 'block';
+                        imgEl.style.display = 'none';
+                    }
+                    
+                    usernameEl.value = user.email.split('@')[0];
+                    
+                    console.log('✅ [checkAuth] Opening modal googleUsernameModal');
+                    openModal('googleUsernameModal');
+                    
+                    // Проверяем что модалка действительно открылась
+                    setTimeout(() => {
+                        const modal = document.getElementById('googleUsernameModal');
+                        const isActive = modal?.classList.contains('active');
+                        console.log('🔍 [checkAuth] Modal active?', isActive);
+                    }, 100);
+                } else {
+                    console.error('❌ [checkAuth] Required elements not found!');
+                }
+            }, 800);
+        } else {
+            console.log('⚠️ [checkAuth] User exists but no DB record and not Google provider');
+        }
+    } else {
+        console.log('❌ [checkAuth] No authenticated user');
+        showAuthButton();
+    }
+}
             console.log('👤 Новый Google пользователь - требуется выбор username');
         }
     } else {
@@ -2472,27 +2532,37 @@ async function registerWithGoogle() {
 }
 
 async function completeGoogleRegistration() {
+    console.log('📝 [completeGoogleRegistration] Starting...');
+    
     const username = document.getElementById('googleUsername').value.trim();
     const errorDiv = document.getElementById('googleUsernameError');
+    
+    console.log('📝 [completeGoogleRegistration] Username:', username);
+    console.log('📝 [completeGoogleRegistration] Pending user:', pendingGoogleUser ? pendingGoogleUser.email : 'NO USER');
     
     errorDiv.innerHTML = '';
     
     if (!username) {
+        console.log('❌ [completeGoogleRegistration] Username is empty');
         errorDiv.innerHTML = '<div class="error-msg">Введите имя пользователя!</div>';
         return;
     }
     
     if (!isValidUsername(username)) {
+        console.log('❌ [completeGoogleRegistration] Username validation failed');
         errorDiv.innerHTML = '<div class="error-msg">Username может содержать только английские буквы (a-z) и цифры (0-9)</div>';
         return;
     }
     
     if (username.length < 4 || username.length > 16) {
+        console.log('❌ [completeGoogleRegistration] Username length invalid:', username.length);
         errorDiv.innerHTML = '<div class="error-msg">Username должен содержать от 4 до 16 символов</div>';
         return;
     }
     
     try {
+        console.log('📝 [completeGoogleRegistration] Checking if username exists...');
+        
         // Проверяем занят ли username
         const { data: existingUser, error: checkError } = await supabase
             .from('users')
@@ -2500,10 +2570,19 @@ async function completeGoogleRegistration() {
             .eq('username', username)
             .maybeSingle();
         
+        console.log('📝 [completeGoogleRegistration] Username check result:', existingUser ? 'TAKEN' : 'AVAILABLE');
+        
+        if (checkError) {
+            console.error('❌ [completeGoogleRegistration] Check error:', checkError);
+        }
+        
         if (existingUser) {
+            console.log('❌ [completeGoogleRegistration] Username already taken');
             errorDiv.innerHTML = '<div class="error-msg">Это имя пользователя уже занято!</div>';
             return;
         }
+        
+        console.log('📝 [completeGoogleRegistration] Creating user in database...');
         
         // Создаем пользователя
         const { data: newUser, error } = await supabase
@@ -2517,14 +2596,25 @@ async function completeGoogleRegistration() {
             .select()
             .single();
         
-        if (error) throw error;
+        if (error) {
+            console.error('❌ [completeGoogleRegistration] Insert error:', error);
+            throw error;
+        }
+        
+        console.log('✅ [completeGoogleRegistration] User created successfully:', newUser);
         
         currentUser = newUser;
+        
+        console.log('📝 [completeGoogleRegistration] Closing modal...');
         closeModal('googleUsernameModal');
+        
+        console.log('📝 [completeGoogleRegistration] Showing profile...');
         showUserProfile();
-        console.log('✅ Google пользователь создан:', username);
+        
+        console.log('✅ [completeGoogleRegistration] Complete! Username:', username);
         
     } catch (error) {
+        console.error('❌ [completeGoogleRegistration] Error:', error);
         errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
     }
 }
