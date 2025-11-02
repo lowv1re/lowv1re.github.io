@@ -1472,8 +1472,7 @@ body {
 <label data-lang-text="Пароль|Password">Пароль</label>
 <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="new-password">
 </div>
-<!-- TURNSTILE ВРЕМЕННО ОТКЛЮЧЕН - раскомментируй когда получишь Site Key -->
-<!-- <div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onLoginTurnstileSuccess"></div> -->
+<div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onLoginTurnstileSuccess"></div>
 <button class="form-submit" onclick="login()" data-lang-text="Войти|Login">Войти</button>
 
 <div class="divider" data-lang-text="или|or">или</div>
@@ -1517,8 +1516,7 @@ body {
 <label data-lang-text="Пароль|Password">Пароль</label>
 <input type="password" id="registerPassword" placeholder="••••••••" autocomplete="new-password">
 </div>
-<!-- TURNSTILE ВРЕМЕННО ОТКЛЮЧЕН - раскомментируй когда получишь Site Key -->
-<!-- <div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onRegisterTurnstileSuccess"></div> -->
+<div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" data-callback="onRegisterTurnstileSuccess"></div>
 <button class="form-submit" id="registerBtn" onclick="register()" data-lang-text="Зарегистрироваться|Register">Зарегистрироваться</button>
 
 <div class="divider" data-lang-text="или|or">или</div>
@@ -2123,11 +2121,11 @@ async function register() {
         return;
     }
     
-    // Проверка Turnstile (ВРЕМЕННО ОТКЛЮЧЕНО - включи когда настроишь Cloudflare)
-    // if (!registerTurnstileToken) {
-    //     errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
-    //     return;
-    // }
+    // Проверка Turnstile
+    if (!registerTurnstileToken) {
+        errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
+        return;
+    }
     
     // Блокируем кнопку и показываем загрузку
     btn.disabled = true;
@@ -2386,7 +2384,10 @@ async function resendVerificationCode() {
 async function loginWithGoogle() {
     try {
         const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: 'google'
+            provider: 'google',
+            options: {
+                redirectTo: 'https://lowv1re.eu'
+            }
         });
         
         if (error) throw error;
@@ -2403,7 +2404,10 @@ async function loginWithGoogle() {
 async function registerWithGoogle() {
     try {
         const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: 'google'
+            provider: 'google',
+            options: {
+                redirectTo: 'https://lowv1re.eu'
+            }
         });
         
         if (error) throw error;
@@ -2487,11 +2491,11 @@ async function login() {
         return;
     }
     
-    // Проверка Turnstile (ВРЕМЕННО ОТКЛЮЧЕНО - включи когда настроишь Cloudflare)
-    // if (!loginTurnstileToken) {
-    //     errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
-    //     return;
-    // }
+    // Проверка Turnstile
+    if (!loginTurnstileToken) {
+        errorDiv.innerHTML = '<div class="error-msg">Пожалуйста, подтвердите что вы не робот!</div>';
+        return;
+    }
     
     try {
         let email = identifier;
