@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LOWV1RE - Магазин игровых услуг</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='400' fill='%230a0a0a' rx='40'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%235ba3f5'/%3E%3Cstop offset='100%25' style='stop-color:%234A90E2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M 120 80 L 120 320 L 300 320 L 300 260 L 190 260 L 190 220 L 230 260 L 190 260 L 190 80 Z' fill='url(%23g)' stroke='%235ba3f5' stroke-width='4'/%3E%3Cpath d='M 190 220 L 230 260 L 190 260 Z' fill='%230a0a0a'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
@@ -1503,8 +1504,8 @@ body {
 <h2 class="modal-title" data-lang-text="Регистрация|Registration">Регистрация</h2>
 <div id="registerError"></div>
 <div class="form-group">
-<label data-lang-text="Имя пользователя|Username">Имя пользователя</label>
-<input type="text" id="registerUsername" placeholder="username" autocomplete="off" oninput="validateUsernameInput(this)">
+<label data-lang-text="Имя пользователя (4-16 символов)|Username (4-16 characters)">Имя пользователя (4-16 символов)</label>
+<input type="text" id="registerUsername" placeholder="username" minlength="4" maxlength="16" autocomplete="off" oninput="validateUsernameInput(this)">
 <div id="usernameError"></div>
 </div>
 <div class="form-group">
@@ -1542,12 +1543,19 @@ body {
 <div class="modal" id="googleUsernameModal">
 <div class="modal-content">
 <h2 class="modal-title" data-lang-text="Регистрация|Registration">Регистрация</h2>
-<div id="googleUsernameAvatar" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);margin:20px auto;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;"></div>
+<div style="position:relative;width:120px;height:120px;margin:20px auto;">
+    <div id="googleUsernameAvatar" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);display:flex;align-items:center;justify-content:center;font-size:48px;color:white;overflow:hidden;cursor:pointer;" onclick="document.getElementById('avatarUpload').click()">
+        <img id="googleAvatarPreview" style="width:100%;height:100%;object-fit:cover;display:none;">
+        <span id="googleAvatarLetter"></span>
+    </div>
+    <input type="file" id="avatarUpload" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event)">
+</div>
+<button onclick="document.getElementById('avatarUpload').click()" style="background:none;border:none;color:#4A90E2;cursor:pointer;font-size:14px;margin:-10px auto 10px;display:block;" data-lang-text="Изменить фото|Change photo">Изменить фото</button>
 <div id="googleUsernameError"></div>
 <p style="text-align:center;color:var(--text-secondary);margin-bottom:20px;" data-lang-text="Выберите имя пользователя|Choose your username">Выберите имя пользователя</p>
 <div class="form-group">
-<label data-lang-text="Логин или никнейм|Username">Логин или никнейм</label>
-<input type="text" id="googleUsername" placeholder="username" maxlength="20" autocomplete="off" oninput="validateUsernameInput(this)">
+<label data-lang-text="Логин или никнейм (4-16 символов)|Username (4-16 characters)">Логин или никнейм (4-16 символов)</label>
+<input type="text" id="googleUsername" placeholder="username" minlength="4" maxlength="16" autocomplete="off" oninput="validateUsernameInput(this)">
 <small style="color:var(--text-secondary);display:block;margin-top:5px;" data-lang-text="Латинские буквы и цифры|Latin letters and numbers only">Латинские буквы и цифры</small>
 </div>
 <button class="form-submit" onclick="completeGoogleRegistration()" data-lang-text="Сохранить|Save">Сохранить</button>
@@ -2013,6 +2021,17 @@ window.addEventListener('load', async () => {
     // Затем загружаем настройки (они могут переопределить геолокацию)
     loadSettings();
     await checkAuth();
+    
+    // Слушаем изменения auth state (для Google OAuth redirect)
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('🔐 Auth state changed:', event);
+        if (event === 'SIGNED_IN' && session) {
+            await checkAuth();
+        } else if (event === 'SIGNED_OUT') {
+            showAuthButton();
+        }
+    });
+    
     updateLangText();
     syncMobileControls();
     
@@ -2032,8 +2051,11 @@ async function checkAuth() {
             // Google пользователь впервые - показываем модалку выбора username
             pendingGoogleUser = user;
             const avatar = user.email.charAt(0).toUpperCase();
-            document.getElementById('googleUsernameAvatar').textContent = avatar;
+            document.getElementById('googleAvatarLetter').textContent = avatar;
+            document.getElementById('googleAvatarLetter').style.display = 'block';
+            document.getElementById('googleAvatarPreview').style.display = 'none';
             document.getElementById('googleUsername').value = user.email.split('@')[0];
+            uploadedAvatar = null; // Сбрасываем загруженную аватарку
             openModal('googleUsernameModal');
             console.log('👤 Новый Google пользователь - требуется выбор username');
         }
@@ -2105,8 +2127,8 @@ async function register() {
         return;
     }
     
-    if (username.length < 3) {
-        errorDiv.innerHTML = '<div class="error-msg">Username должен содержать минимум 3 символа</div>';
+    if (username.length < 4 || username.length > 16) {
+        errorDiv.innerHTML = '<div class="error-msg">Username должен содержать от 4 до 16 символов</div>';
         return;
     }
     
@@ -2386,7 +2408,7 @@ async function loginWithGoogle() {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: 'https://lowv1re.eu'
+                redirectTo: window.location.origin
             }
         });
         
@@ -2406,7 +2428,7 @@ async function registerWithGoogle() {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: 'https://lowv1re.eu'
+                redirectTo: window.location.origin
             }
         });
         
@@ -2437,8 +2459,8 @@ async function completeGoogleRegistration() {
         return;
     }
     
-    if (username.length < 3) {
-        errorDiv.innerHTML = '<div class="error-msg">Username должен содержать минимум 3 символа</div>';
+    if (username.length < 4 || username.length > 16) {
+        errorDiv.innerHTML = '<div class="error-msg">Username должен содержать от 4 до 16 символов</div>';
         return;
     }
     
@@ -2477,6 +2499,39 @@ async function completeGoogleRegistration() {
     } catch (error) {
         errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
     }
+}
+
+// Глобальная переменная для хранения загруженной аватарки
+let uploadedAvatar = null;
+
+function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Проверяем тип файла
+    if (!file.type.startsWith('image/')) {
+        alert('Пожалуйста, выберите изображение!');
+        return;
+    }
+    
+    // Проверяем размер (макс 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Файл слишком большой! Максимум 5MB');
+        return;
+    }
+    
+    // Читаем файл и показываем превью
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        uploadedAvatar = e.target.result;
+        const preview = document.getElementById('googleAvatarPreview');
+        const letter = document.getElementById('googleAvatarLetter');
+        preview.src = uploadedAvatar;
+        preview.style.display = 'block';
+        letter.style.display = 'none';
+        console.log('✅ Аватарка загружена');
+    };
+    reader.readAsDataURL(file);
 }
 
 async function login() {
