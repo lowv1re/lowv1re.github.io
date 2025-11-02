@@ -6,7 +6,6 @@
 <title>LOWV1RE - Магазин игровых услуг</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='400' fill='%230a0a0a' rx='40'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%235ba3f5'/%3E%3Cstop offset='100%25' style='stop-color:%234A90E2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M 120 80 L 120 320 L 300 320 L 300 260 L 190 260 L 190 220 L 230 260 L 190 260 L 190 80 Z' fill='url(%23g)' stroke='%235ba3f5' stroke-width='4'/%3E%3Cpath d='M 190 220 L 230 260 L 190 260 Z' fill='%230a0a0a'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Turnstile временно отключен -->
 <style>
 * {
     margin: 0;
@@ -1543,19 +1542,12 @@ body {
 <div class="modal" id="googleUsernameModal">
 <div class="modal-content">
 <h2 class="modal-title" data-lang-text="Регистрация|Registration">Регистрация</h2>
-<div style="position:relative;width:120px;height:120px;margin:20px auto;">
-    <div id="googleUsernameAvatar" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);display:flex;align-items:center;justify-content:center;font-size:48px;color:white;overflow:hidden;cursor:pointer;position:relative;" onclick="document.getElementById('googleAvatarUpload').click()">
-        <img id="googleAvatarImg" style="width:100%;height:100%;object-fit:cover;display:none;">
-        <span id="googleAvatarLetter" style="position:absolute;"></span>
-    </div>
-    <input type="file" id="googleAvatarUpload" accept="image/*" style="display:none;" onchange="handleGoogleAvatarUpload(event)">
-</div>
-<button onclick="document.getElementById('googleAvatarUpload').click()" style="background:none;border:none;color:#4A90E2;cursor:pointer;font-size:14px;margin:-10px auto 10px;display:block;" data-lang-text="Изменить фото|Change photo">Изменить фото</button>
+<div id="googleUsernameAvatar" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);margin:20px auto;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;"></div>
 <div id="googleUsernameError"></div>
-<p style="text-align:center;color:var(--text-secondary);margin-bottom:20px;" data-lang-text="Выберите имя пользователя (4-16 символов)|Choose your username (4-16 characters)">Выберите имя пользователя (4-16 символов)</p>
+<p style="text-align:center;color:var(--text-secondary);margin-bottom:20px;" data-lang-text="Выберите имя пользователя|Choose your username">Выберите имя пользователя</p>
 <div class="form-group">
 <label data-lang-text="Логин или никнейм|Username">Логин или никнейм</label>
-<input type="text" id="googleUsername" placeholder="username" minlength="4" maxlength="16" autocomplete="off" oninput="validateUsernameInput(this)">
+<input type="text" id="googleUsername" placeholder="username" maxlength="20" autocomplete="off" oninput="validateUsernameInput(this)">
 <small style="color:var(--text-secondary);display:block;margin-top:5px;" data-lang-text="Латинские буквы и цифры|Latin letters and numbers only">Латинские буквы и цифры</small>
 </div>
 <button class="form-submit" onclick="completeGoogleRegistration()" data-lang-text="Сохранить|Save">Сохранить</button>
@@ -1770,19 +1762,15 @@ function updateBalance() {
 
 // Функция для переключения валюты
 function changeCurrency() {
-    // Определяем какой select был изменен (десктоп или мобильный)
+    // Работает и с десктопным и с мобильным select
     const desktopSelect = document.getElementById('currencySwitch');
     const mobileSelect = document.getElementById('currencySwitchMobile');
     
-    // Берём значение из того select который изменился
-    // Или из десктопного если оба совпадают
     if (mobileSelect && mobileSelect.value !== currentCurrency) {
         currentCurrency = mobileSelect.value;
-        // Синхронизируем десктопный select
         if (desktopSelect) desktopSelect.value = currentCurrency;
     } else if (desktopSelect) {
         currentCurrency = desktopSelect.value;
-        // Синхронизируем мобильный select
         if (mobileSelect) mobileSelect.value = currentCurrency;
     }
     
@@ -2036,11 +2024,9 @@ window.addEventListener('load', async () => {
     loadSettings();
     await checkAuth();
     
-    // Слушаем изменения auth state для Google OAuth
+    // Слушаем auth state для Google OAuth
     supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
-            console.log('🔐 Auth state: SIGNED_IN');
-            // Перепроверяем auth после Google OAuth redirect
             await checkAuth();
         }
     });
@@ -2063,26 +2049,8 @@ async function checkAuth() {
         } else if (user.app_metadata.provider === 'google') {
             // Google пользователь впервые - показываем модалку выбора username
             pendingGoogleUser = user;
-            
-            // Получаем аватарку из Google (если есть)
-            const googleAvatar = user.user_metadata?.avatar_url || user.user_metadata?.picture;
-            const avatarLetter = user.email.charAt(0).toUpperCase();
-            
-            const imgEl = document.getElementById('googleAvatarImg');
-            const letterEl = document.getElementById('googleAvatarLetter');
-            
-            if (googleAvatar) {
-                // Показываем аватарку из Google
-                imgEl.src = googleAvatar;
-                imgEl.style.display = 'block';
-                letterEl.style.display = 'none';
-            } else {
-                // Показываем букву
-                letterEl.textContent = avatarLetter;
-                letterEl.style.display = 'block';
-                imgEl.style.display = 'none';
-            }
-            
+            const avatar = user.email.charAt(0).toUpperCase();
+            document.getElementById('googleUsernameAvatar').textContent = avatar;
             document.getElementById('googleUsername').value = user.email.split('@')[0];
             openModal('googleUsernameModal');
             console.log('👤 Новый Google пользователь - требуется выбор username');
@@ -2472,25 +2440,34 @@ async function registerWithGoogle() {
 }
 
 async function completeGoogleRegistration() {
+    console.log('🔵 [SAVE] Кнопка Сохранить нажата');
+    
     const username = document.getElementById('googleUsername').value.trim();
     const errorDiv = document.getElementById('googleUsernameError');
+    
+    console.log('🔵 [SAVE] Username:', username);
     
     errorDiv.innerHTML = '';
     
     if (!username) {
+        console.log('❌ [SAVE] Username пустой');
         errorDiv.innerHTML = '<div class="error-msg">Введите имя пользователя!</div>';
         return;
     }
     
     if (!isValidUsername(username)) {
+        console.log('❌ [SAVE] Username невалидный');
         errorDiv.innerHTML = '<div class="error-msg">Username может содержать только английские буквы (a-z) и цифры (0-9)</div>';
         return;
     }
     
     if (username.length < 4 || username.length > 16) {
+        console.log('❌ [SAVE] Username длина неправильная:', username.length);
         errorDiv.innerHTML = '<div class="error-msg">Username должен содержать от 4 до 16 символов</div>';
         return;
     }
+    
+    console.log('🔵 [SAVE] Валидация прошла, проверяем БД...');
     
     try {
         // Проверяем занят ли username
@@ -2500,10 +2477,16 @@ async function completeGoogleRegistration() {
             .eq('username', username)
             .maybeSingle();
         
+        console.log('🔵 [SAVE] Проверка username:', existingUser ? 'ЗАНЯТ' : 'СВОБОДЕН');
+        
         if (existingUser) {
+            console.log('❌ [SAVE] Username уже существует');
             errorDiv.innerHTML = '<div class="error-msg">Это имя пользователя уже занято!</div>';
             return;
         }
+        
+        console.log('🔵 [SAVE] Создаём пользователя в БД...');
+        console.log('🔵 [SAVE] Email:', pendingGoogleUser?.email);
         
         // Создаем пользователя
         const { data: newUser, error } = await supabase
@@ -2517,46 +2500,26 @@ async function completeGoogleRegistration() {
             .select()
             .single();
         
-        if (error) throw error;
+        console.log('🔵 [SAVE] Результат INSERT:', { newUser, error });
+        
+        if (error) {
+            console.log('❌ [SAVE] Ошибка при INSERT:', error);
+            throw error;
+        }
+        
+        console.log('✅ [SAVE] Пользователь создан в БД!');
         
         currentUser = newUser;
+        console.log('🔵 [SAVE] Закрываем модалку...');
         closeModal('googleUsernameModal');
+        console.log('🔵 [SAVE] Показываем профиль...');
         showUserProfile();
-        console.log('✅ Google пользователь создан:', username);
+        console.log('✅ [SAVE] ГОТОВО! Username:', username);
         
     } catch (error) {
+        console.error('❌ [SAVE] ОШИБКА:', error);
         errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
     }
-}
-
-// Обработка загрузки аватарки в модалке Google OAuth
-function handleGoogleAvatarUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    // Проверяем тип файла
-    if (!file.type.startsWith('image/')) {
-        alert('Пожалуйста, выберите изображение!');
-        return;
-    }
-    
-    // Проверяем размер (макс 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        alert('Файл слишком большой! Максимум 5MB');
-        return;
-    }
-    
-    // Читаем файл и показываем превью
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const imgEl = document.getElementById('googleAvatarImg');
-        const letterEl = document.getElementById('googleAvatarLetter');
-        imgEl.src = e.target.result;
-        imgEl.style.display = 'block';
-        letterEl.style.display = 'none';
-        console.log('✅ Аватарка загружена');
-    };
-    reader.readAsDataURL(file);
 }
 
 async function login() {
