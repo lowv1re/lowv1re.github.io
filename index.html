@@ -1058,6 +1058,11 @@ body {
 <a href="#" class="logo" onclick="window.location.reload()">🎮 LOWV1RE</a>
 <div class="nav-links">
 <a href="#games" data-lang-text="Игры|Games">Игры</a>
+<a href="#marketplace" onclick="showMarketplace()" data-lang-text="Маркетплейс|Marketplace">🛒 Маркетплейс</a>
+<a href="#chats" onclick="showChats()" class="chats-link" data-lang-text="Чаты|Chats" style="position:relative;">
+    💬 Чаты
+    <span id="unreadBadge" style="position:absolute;top:-8px;right:-12px;background:#ff4444;color:white;border-radius:10px;padding:2px 6px;font-size:11px;font-weight:bold;display:none;">0</span>
+</a>
 <a href="#services" data-lang-text="Услуги|Services">Услуги</a>
 <a href="#contact" data-lang-text="Контакты|Contact">Контакты</a>
 <div id="authSection"></div>
@@ -1146,8 +1151,102 @@ body {
 <div class="stat-label" data-lang-text="Дата регистрации|Registered">Дата регистрации</div>
 <div class="stat-value" id="profileDate" style="font-size:14px;">--</div>
 </div>
+<div class="stat-box">
+<div class="stat-label" data-lang-text="Моих товаров|My Items">Моих товаров</div>
+<div class="stat-value" id="profileItemsCount">0</div>
+</div>
+</div>
+<div style="display:flex;gap:10px;margin-top:20px;">
+<button class="form-submit" onclick="openModal('createItemModal')" style="flex:1;" data-lang-text="Выставить товар|List Item">🛒 Выставить товар</button>
+<button class="form-submit" onclick="showMyItems()" style="flex:1;background:#4A90E2;" data-lang-text="Мои товары|My Items">📦 Мои товары</button>
 </div>
 <button class="logout-btn" onclick="logout()" data-lang-text="Выйти|Logout">Выйти</button>
+</div>
+</div>
+</div>
+
+<!-- МАРКЕТПЛЕЙС -->
+<div id="marketplaceSection" style="display:none;">
+<div class="container">
+<div class="profile-section">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;">
+<h2 class="section-title" style="margin:0;" data-lang-text="🛒 Маркетплейс|🛒 Marketplace">🛒 Маркетплейс</h2>
+<button class="form-submit" onclick="openModal('createItemModal')" data-lang-text="Выставить товар|List Item">+ Выставить товар</button>
+</div>
+
+<!-- Фильтры -->
+<div style="display:flex;gap:15px;margin-bottom:25px;flex-wrap:wrap;">
+<select id="gameFilter" class="currency-switch" style="flex:1;min-width:200px;" onchange="filterMarketplace()">
+<option value="" data-lang-text="Все игры|All Games">Все игры</option>
+</select>
+<input type="text" id="marketplaceSearch" placeholder="Поиск товара..." class="currency-switch" style="flex:2;min-width:250px;" oninput="filterMarketplace()" data-lang-placeholder="Поиск товара...|Search item...">
+<select id="sortFilter" class="currency-switch" onchange="filterMarketplace()">
+<option value="newest" data-lang-text="Новые|Newest">Новые</option>
+<option value="price_asc" data-lang-text="Цена ↑|Price ↑">Цена ↑</option>
+<option value="price_desc" data-lang-text="Цена ↓|Price ↓">Цена ↓</option>
+</select>
+</div>
+
+<!-- Товары -->
+<div id="marketplaceItems" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;">
+<!-- Здесь будут карточки товаров -->
+</div>
+
+<div id="marketplaceEmpty" style="text-align:center;padding:60px 20px;color:var(--text-secondary);display:none;">
+<div style="font-size:64px;margin-bottom:20px;">📦</div>
+<h3 data-lang-text="Пока нет товаров|No items yet">Пока нет товаров</h3>
+<p data-lang-text="Станьте первым продавцом!|Be the first seller!">Станьте первым продавцом!</p>
+<button class="form-submit" onclick="openModal('createItemModal')" style="margin-top:20px;" data-lang-text="Выставить товар|List Item">Выставить товар</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ЧАТЫ -->
+<div id="chatsSection" style="display:none;">
+<div class="container">
+<div class="profile-section">
+<h2 class="section-title" data-lang-text="💬 Чаты|💬 Chats">💬 Чаты</h2>
+
+<!-- Список чатов -->
+<div id="chatsList" style="display:flex;flex-direction:column;gap:15px;">
+<!-- Здесь будут чаты -->
+</div>
+
+<div id="chatsEmpty" style="text-align:center;padding:60px 20px;color:var(--text-secondary);display:none;">
+<div style="font-size:64px;margin-bottom:20px;">💬</div>
+<h3 data-lang-text="Нет активных чатов|No active chats">Нет активных чатов</h3>
+<p data-lang-text="Начните диалог с продавцом|Start a conversation with a seller">Начните диалог с продавцом</p>
+<button class="form-submit" onclick="showMarketplace()" style="margin-top:20px;" data-lang-text="Перейти в маркетплейс|Go to Marketplace">Перейти в маркетплейс</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ЧАТ (один диалог) -->
+<div id="chatSection" style="display:none;">
+<div class="container">
+<div class="profile-section">
+<!-- Шапка чата -->
+<div style="display:flex;align-items:center;gap:15px;padding-bottom:20px;border-bottom:2px solid var(--border-color);margin-bottom:20px;">
+<button onclick="showChats()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-primary);">←</button>
+<div class="profile-avatar" id="chatUserAvatar" style="width:50px;height:50px;font-size:20px;">U</div>
+<div style="flex:1;">
+<h3 id="chatUsername" style="margin:0;color:var(--text-primary);">Username</h3>
+<p id="chatItemTitle" style="margin:5px 0 0 0;color:var(--text-secondary);font-size:14px;">Товар</p>
+</div>
+</div>
+
+<!-- Сообщения -->
+<div id="messagesContainer" style="max-height:500px;overflow-y:auto;padding:20px;background:var(--bg-secondary);border-radius:15px;margin-bottom:20px;">
+<!-- Здесь будут сообщения -->
+</div>
+
+<!-- Поле ввода -->
+<div style="display:flex;gap:10px;">
+<input type="text" id="messageInput" placeholder="Напишите сообщение..." style="flex:1;padding:12px 20px;background:var(--bg-secondary);border:2px solid var(--border-color);border-radius:25px;color:var(--text-primary);font-size:15px;" onkeypress="if(event.key==='Enter') sendMessage()" data-lang-placeholder="Напишите сообщение...|Write a message...">
+<button onclick="sendMessage()" class="form-submit" style="padding:12px 30px;border-radius:25px;" data-lang-text="Отправить|Send">Отправить</button>
+</div>
 </div>
 </div>
 </div>
@@ -1461,6 +1560,51 @@ body {
 <a href="mailto:lowv1re1@gmail.com">📧 lowv1re1@gmail.com</a>
 </div>
 <p style="margin-top:30px;color:var(--text-secondary);font-size:14px;">© 2024 LOWV1RE. Все права защищены.</p>
+</div>
+</div>
+
+<!-- МОДАЛКА: СОЗДАНИЕ ТОВАРА -->
+<div class="modal" id="createItemModal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('createItemModal')">&times;</span>
+<h2 class="modal-title" data-lang-text="Выставить товар|List Item">Выставить товар</h2>
+<div id="createItemError"></div>
+
+<div class="form-group">
+<label data-lang-text="Игра|Game">Игра</label>
+<select id="itemGame" style="width:100%;padding:12px;background:var(--bg-secondary);border:2px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:15px;">
+<option value="" data-lang-text="Выберите игру|Select game">Выберите игру</option>
+</select>
+</div>
+
+<div class="form-group">
+<label data-lang-text="Название товара|Item Title">Название товара</label>
+<input type="text" id="itemTitle" placeholder="Например: Аккаунт 30 лвл" maxlength="100" data-lang-placeholder="Например: Аккаунт 30 лвл|For example: Account lvl 30">
+</div>
+
+<div class="form-group">
+<label data-lang-text="Цена (₽)|Price (₽)">Цена (₽)</label>
+<input type="number" id="itemPrice" placeholder="1000" min="1" step="1">
+</div>
+
+<div class="form-group">
+<label data-lang-text="Описание товара|Item Description">Описание товара</label>
+<textarea id="itemDescription" placeholder="Подробно опишите товар..." rows="6" style="width:100%;padding:12px;background:var(--bg-secondary);border:2px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:15px;resize:vertical;" data-lang-placeholder="Подробно опишите товар...|Describe your item in detail..."></textarea>
+</div>
+
+<button class="form-submit" id="createItemBtn" onclick="createItem()" data-lang-text="Опубликовать|Publish">Опубликовать</button>
+</div>
+</div>
+
+<!-- МОДАЛКА: КАРТОЧКА ТОВАРА -->
+<div class="modal" id="itemModal">
+<div class="modal-content" style="max-width:700px;">
+<span class="modal-close" onclick="closeModal('itemModal')">&times;</span>
+
+<!-- Карточка товара -->
+<div id="itemCard">
+<!-- Заполняется динамически -->
+</div>
 </div>
 </div>
 
@@ -2156,9 +2300,13 @@ function showUserProfile() {
     
     document.getElementById('profileUsername').textContent = currentUser.username;
     document.getElementById('profileEmail').textContent = currentUser.email;
-    document.getElementById('profileUrl').textContent = `lowv1re.eu/user${currentUser.id}`;
+    document.getElementById('profileUrl').textContent = `lowv1re.eu/profile/${currentUser.username}`;
     // Обновляем баланс с учетом текущей валюты
     updateBalance();
+    // Обновляем счётчик товаров
+    updateProfileItemsCount();
+    // Обновляем badge непрочитанных сообщений
+    updateUnreadBadge();
     // Скрываем кнопки входа в hero секции
     const heroButtons = document.getElementById('heroButtons');
     if (heroButtons) heroButtons.style.display = 'none';
@@ -2842,7 +2990,702 @@ async function logout() {
     currentUser = null;
     showAuthButton();
     document.getElementById('profileSection').style.display = 'none';
+    document.getElementById('marketplaceSection').style.display = 'none';
+    document.getElementById('chatsSection').style.display = 'none';
+    document.getElementById('chatSection').style.display = 'none';
     document.getElementById('games').style.display = 'block';
+}
+
+// === НАВИГАЦИЯ МЕЖДУ СЕКЦИЯМИ ===
+
+function showMarketplace() {
+    document.getElementById('profileSection').style.display = 'none';
+    document.getElementById('games').style.display = 'none';
+    document.getElementById('chatsSection').style.display = 'none';
+    document.getElementById('chatSection').style.display = 'none';
+    document.getElementById('marketplaceSection').style.display = 'block';
+    loadMarketplace();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showChats() {
+    if (!currentUser) {
+        openModal('loginModal');
+        return;
+    }
+    document.getElementById('profileSection').style.display = 'none';
+    document.getElementById('games').style.display = 'none';
+    document.getElementById('marketplaceSection').style.display = 'none';
+    document.getElementById('chatSection').style.display = 'none';
+    document.getElementById('chatsSection').style.display = 'block';
+    loadChats();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showGames() {
+    document.getElementById('profileSection').style.display = 'none';
+    document.getElementById('marketplaceSection').style.display = 'none';
+    document.getElementById('chatsSection').style.display = 'none';
+    document.getElementById('chatSection').style.display = 'none';
+    document.getElementById('games').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showMyItems() {
+    showMarketplace();
+    // Фильтруем только свои товары
+    setTimeout(() => {
+        filterMarketplace(true);
+    }, 100);
+}
+
+// === МАРКЕТПЛЕЙС ===
+
+let allMarketplaceItems = [];
+
+async function loadMarketplace() {
+    console.log('📦 Загружаем маркетплейс...');
+    
+    try {
+        // Загружаем все товары с информацией о продавцах
+        const { data: items, error } = await supabase
+            .from('items')
+            .select(`
+                *,
+                seller:users!seller_id(id, username, avatar_url)
+            `)
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        console.log('✅ Загружено товаров:', items ? items.length : 0);
+        
+        allMarketplaceItems = items || [];
+        
+        // Заполняем фильтр игр
+        await fillGameFilter();
+        
+        // Показываем товары
+        displayMarketplaceItems(allMarketplaceItems);
+        
+    } catch (error) {
+        console.error('❌ Ошибка загрузки маркетплейса:', error);
+    }
+}
+
+async function fillGameFilter() {
+    const filterSelect = document.getElementById('gameFilter');
+    
+    // Загружаем список игр из products
+    const { data: games } = await supabase
+        .from('products')
+        .select('name')
+        .order('name');
+    
+    if (games && games.length > 0) {
+        games.forEach(game => {
+            const option = document.createElement('option');
+            option.value = game.name;
+            option.textContent = game.name;
+            filterSelect.appendChild(option);
+        });
+    }
+}
+
+function displayMarketplaceItems(items) {
+    const container = document.getElementById('marketplaceItems');
+    const emptyState = document.getElementById('marketplaceEmpty');
+    
+    if (!items || items.length === 0) {
+        container.innerHTML = '';
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'grid';
+    emptyState.style.display = 'none';
+    
+    container.innerHTML = items.map(item => `
+        <div class="game-card" style="cursor:pointer;transition:all 0.3s;" onclick="showItemCard(${item.id})">
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+                    <span style="background:rgba(91,163,245,0.2);color:#5ba3f5;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;">${item.game}</span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        ${item.seller.avatar_url ? 
+                            `<div style="width:24px;height:24px;border-radius:50%;background-image:url(${item.seller.avatar_url});background-size:cover;"></div>` :
+                            `<div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;font-size:12px;color:white;">${item.seller.username.charAt(0).toUpperCase()}</div>`
+                        }
+                        <span style="color:var(--text-secondary);font-size:13px;">${item.seller.username}</span>
+                    </div>
+                </div>
+                <h3 style="margin:15px 0 10px 0;font-size:18px;color:var(--text-primary);">${item.title}</h3>
+                <p style="color:var(--text-secondary);font-size:14px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${item.description}</p>
+            </div>
+            <div>
+                <div class="game-price" style="margin-top:15px;">
+                    <span class="price-display">${item.price}₽</span>
+                </div>
+                <button class="btn" onclick="event.stopPropagation(); showItemCard(${item.id})" style="width:100%;margin-top:10px;" data-lang-text="Открыть|Open">Открыть</button>
+            </div>
+        </div>
+    `).join('');
+    
+    updateLangText();
+}
+
+function filterMarketplace(myItemsOnly = false) {
+    let filtered = [...allMarketplaceItems];
+    
+    // Фильтр: только мои товары
+    if (myItemsOnly && currentUser) {
+        filtered = filtered.filter(item => item.seller_id === currentUser.id);
+    }
+    
+    // Фильтр по игре
+    const gameFilter = document.getElementById('gameFilter').value;
+    if (gameFilter) {
+        filtered = filtered.filter(item => item.game === gameFilter);
+    }
+    
+    // Поиск по названию
+    const searchQuery = document.getElementById('marketplaceSearch').value.toLowerCase();
+    if (searchQuery) {
+        filtered = filtered.filter(item => 
+            item.title.toLowerCase().includes(searchQuery) ||
+            item.description.toLowerCase().includes(searchQuery)
+        );
+    }
+    
+    // Сортировка
+    const sortFilter = document.getElementById('sortFilter').value;
+    if (sortFilter === 'price_asc') {
+        filtered.sort((a, b) => a.price - b.price);
+    } else if (sortFilter === 'price_desc') {
+        filtered.sort((a, b) => b.price - a.price);
+    } else {
+        // newest (по умолчанию)
+        filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    
+    displayMarketplaceItems(filtered);
+}
+
+async function createItem() {
+    if (!currentUser) {
+        openModal('loginModal');
+        return;
+    }
+    
+    const game = document.getElementById('itemGame').value;
+    const title = document.getElementById('itemTitle').value.trim();
+    const price = parseFloat(document.getElementById('itemPrice').value);
+    const description = document.getElementById('itemDescription').value.trim();
+    const errorDiv = document.getElementById('createItemError');
+    const btn = document.getElementById('createItemBtn');
+    
+    errorDiv.innerHTML = '';
+    
+    // Валидация
+    if (!game) {
+        errorDiv.innerHTML = '<div class="error-msg">Выберите игру!</div>';
+        return;
+    }
+    
+    if (!title || title.length < 5) {
+        errorDiv.innerHTML = '<div class="error-msg">Название должно быть минимум 5 символов!</div>';
+        return;
+    }
+    
+    if (!price || price < 1) {
+        errorDiv.innerHTML = '<div class="error-msg">Укажите корректную цену!</div>';
+        return;
+    }
+    
+    if (!description || description.length < 20) {
+        errorDiv.innerHTML = '<div class="error-msg">Описание должно быть минимум 20 символов!</div>';
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span> Публикация...';
+    
+    try {
+        console.log('📤 Создаём товар...');
+        
+        const { data, error } = await supabase
+            .from('items')
+            .insert([{
+                seller_id: currentUser.id,
+                game: game,
+                title: title,
+                price: price,
+                description: description
+            }])
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        console.log('✅ Товар создан:', data);
+        
+        // Очищаем форму
+        document.getElementById('itemGame').value = '';
+        document.getElementById('itemTitle').value = '';
+        document.getElementById('itemPrice').value = '';
+        document.getElementById('itemDescription').value = '';
+        
+        closeModal('createItemModal');
+        
+        // Обновляем счётчик товаров в профиле
+        await updateProfileItemsCount();
+        
+        // Показываем товар в маркетплейсе
+        showMarketplace();
+        
+        alert(currentLang === 'ru' ? 'Товар успешно опубликован!' : 'Item published successfully!');
+        
+    } catch (error) {
+        console.error('❌ Ошибка создания товара:', error);
+        errorDiv.innerHTML = `<div class="error-msg">Ошибка: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = currentLang === 'ru' ? 'Опубликовать' : 'Publish';
+        updateLangText();
+    }
+}
+
+async function showItemCard(itemId) {
+    console.log('📦 Открываем карточку товара:', itemId);
+    
+    try {
+        // Загружаем товар с информацией о продавце
+        const { data: item, error } = await supabase
+            .from('items')
+            .select(`
+                *,
+                seller:users!seller_id(id, username, avatar_url, email)
+            `)
+            .eq('id', itemId)
+            .single();
+        
+        if (error) throw error;
+        
+        console.log('✅ Товар загружен:', item);
+        
+        // Заполняем карточку
+        const cardHtml = `
+            <div style="background:var(--bg-secondary);padding:30px;border-radius:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:20px;">
+                    <span style="background:rgba(91,163,245,0.2);color:#5ba3f5;padding:6px 16px;border-radius:25px;font-size:14px;font-weight:600;">${item.game}</span>
+                    <span style="color:var(--text-secondary);font-size:13px;">${new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
+                </div>
+                
+                <h2 style="font-size:28px;margin:20px 0;color:var(--text-primary);">${item.title}</h2>
+                
+                <div style="display:flex;align-items:center;gap:12px;padding:15px;background:var(--bg-primary);border-radius:15px;margin-bottom:25px;">
+                    ${item.seller.avatar_url ? 
+                        `<div style="width:50px;height:50px;border-radius:50%;background-image:url(${item.seller.avatar_url});background-size:cover;"></div>` :
+                        `<div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">${item.seller.username.charAt(0).toUpperCase()}</div>`
+                    }
+                    <div>
+                        <div style="font-weight:600;color:var(--text-primary);">${item.seller.username}</div>
+                        <div style="font-size:13px;color:var(--text-secondary);">Продавец</div>
+                    </div>
+                </div>
+                
+                <div style="background:var(--bg-primary);padding:20px;border-radius:15px;margin-bottom:25px;">
+                    <h3 style="margin:0 0 15px 0;font-size:16px;color:var(--text-primary);">Описание</h3>
+                    <p style="color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;">${item.description}</p>
+                </div>
+                
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:25px;background:linear-gradient(135deg,rgba(91,163,245,0.1) 0%,rgba(74,144,226,0.1) 100%);border-radius:15px;border:2px solid rgba(91,163,245,0.3);">
+                    <div>
+                        <div style="font-size:14px;color:var(--text-secondary);margin-bottom:5px;">Цена</div>
+                        <div style="font-size:36px;font-weight:bold;color:#5ba3f5;">${item.price}₽</div>
+                    </div>
+                    ${currentUser && currentUser.id !== item.seller_id ? 
+                        `<button class="form-submit" onclick="openChatWithSeller(${item.id})" style="padding:15px 40px;font-size:18px;" data-lang-text="💬 Купить|💬 Buy">💬 Купить</button>` :
+                        currentUser && currentUser.id === item.seller_id ?
+                        `<button class="form-submit" style="padding:15px 40px;font-size:18px;background:#666;cursor:not-allowed;" disabled>Это ваш товар</button>` :
+                        `<button class="form-submit" onclick="closeModal('itemModal'); openModal('loginModal')" style="padding:15px 40px;font-size:18px;">Войти для покупки</button>`
+                    }
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('itemCard').innerHTML = cardHtml;
+        openModal('itemModal');
+        updateLangText();
+        
+    } catch (error) {
+        console.error('❌ Ошибка загрузки товара:', error);
+        alert('Ошибка загрузки товара!');
+    }
+}
+
+async function updateProfileItemsCount() {
+    if (!currentUser) return;
+    
+    try {
+        const { count } = await supabase
+            .from('items')
+            .select('*', { count: 'exact', head: true })
+            .eq('seller_id', currentUser.id);
+        
+        document.getElementById('profileItemsCount').textContent = count || 0;
+    } catch (error) {
+        console.error('Ошибка подсчёта товаров:', error);
+    }
+}
+
+// === СИСТЕМА ЧАТОВ ===
+
+let currentChat = null;
+let chatRealtimeSubscription = null;
+
+async function openChatWithSeller(itemId) {
+    if (!currentUser) {
+        closeModal('itemModal');
+        openModal('loginModal');
+        return;
+    }
+    
+    console.log('💬 Открываем чат для товара:', itemId);
+    
+    try {
+        // Загружаем товар чтобы узнать продавца
+        const { data: item } = await supabase
+            .from('items')
+            .select('*, seller:users!seller_id(*)')
+            .eq('id', itemId)
+            .single();
+        
+        if (!item) {
+            alert('Товар не найден!');
+            return;
+        }
+        
+        if (item.seller_id === currentUser.id) {
+            alert('Это ваш товар!');
+            return;
+        }
+        
+        // Проверяем есть ли уже чат
+        let { data: existingChat } = await supabase
+            .from('chats')
+            .select('*')
+            .eq('buyer_id', currentUser.id)
+            .eq('item_id', itemId)
+            .single();
+        
+        if (!existingChat) {
+            // Создаём новый чат
+            console.log('➕ Создаём новый чат...');
+            
+            const { data: newChat, error } = await supabase
+                .from('chats')
+                .insert([{
+                    buyer_id: currentUser.id,
+                    seller_id: item.seller_id,
+                    item_id: itemId
+                }])
+                .select()
+                .single();
+            
+            if (error) throw error;
+            
+            existingChat = newChat;
+            
+            // Отправляем приветственное сообщение
+            await supabase
+                .from('messages')
+                .insert([{
+                    chat_id: existingChat.id,
+                    sender_id: currentUser.id,
+                    text: `Здравствуйте! Интересует "${item.title}". Можем обсудить детали?`
+                }]);
+            
+            console.log('✅ Чат создан:', existingChat.id);
+        }
+        
+        // Открываем чат
+        closeModal('itemModal');
+        openChat(existingChat.id);
+        
+    } catch (error) {
+        console.error('❌ Ошибка открытия чата:', error);
+        alert('Ошибка создания чата!');
+    }
+}
+
+async function loadChats() {
+    if (!currentUser) return;
+    
+    console.log('💬 Загружаем чаты...');
+    
+    try {
+        // Загружаем чаты где пользователь покупатель или продавец
+        const { data: chats, error } = await supabase
+            .from('chats')
+            .select(`
+                *,
+                item:items(*),
+                buyer:users!buyer_id(id, username, avatar_url),
+                seller:users!seller_id(id, username, avatar_url),
+                last_message:messages(text, created_at, sender_id)
+            `)
+            .or(`buyer_id.eq.${currentUser.id},seller_id.eq.${currentUser.id}`)
+            .order('updated_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        console.log('✅ Загружено чатов:', chats ? chats.length : 0);
+        
+        displayChats(chats || []);
+        
+        // Обновляем badge непрочитанных
+        await updateUnreadBadge();
+        
+    } catch (error) {
+        console.error('❌ Ошибка загрузки чатов:', error);
+    }
+}
+
+function displayChats(chats) {
+    const container = document.getElementById('chatsList');
+    const emptyState = document.getElementById('chatsEmpty');
+    
+    if (!chats || chats.length === 0) {
+        container.innerHTML = '';
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'flex';
+    emptyState.style.display = 'none';
+    
+    container.innerHTML = chats.map(chat => {
+        // Определяем собеседника
+        const isOurChat = chat.messages && chat.messages.length > 0;
+        const interlocutor = chat.buyer_id === currentUser.id ? chat.seller : chat.buyer;
+        const lastMessage = Array.isArray(chat.last_message) && chat.last_message.length > 0 ? chat.last_message[0] : null;
+        
+        return `
+            <div onclick="openChat(${chat.id})" style="display:flex;align-items:center;gap:15px;padding:20px;background:var(--bg-secondary);border-radius:15px;cursor:pointer;transition:all 0.3s;border:2px solid transparent;" onmouseover="this.style.borderColor='#5ba3f5'" onmouseout="this.style.borderColor='transparent'">
+                ${interlocutor.avatar_url ? 
+                    `<div style="width:60px;height:60px;border-radius:50%;background-image:url(${interlocutor.avatar_url});background-size:cover;flex-shrink:0;"></div>` :
+                    `<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;font-size:26px;color:white;flex-shrink:0;">${interlocutor.username.charAt(0).toUpperCase()}</div>`
+                }
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:5px;">
+                        <h3 style="margin:0;font-size:18px;color:var(--text-primary);">${interlocutor.username}</h3>
+                        <span style="font-size:12px;color:var(--text-secondary);">${lastMessage ? new Date(lastMessage.created_at).toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}) : ''}</span>
+                    </div>
+                    <p style="margin:5px 0 0 0;font-size:13px;color:#5ba3f5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${chat.item ? chat.item.title : 'Товар удалён'}</p>
+                    ${lastMessage ? 
+                        `<p style="margin:8px 0 0 0;font-size:14px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${lastMessage.text}</p>` :
+                        `<p style="margin:8px 0 0 0;font-size:14px;color:var(--text-secondary);">Начните диалог...</p>`
+                    }
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function openChat(chatId) {
+    console.log('💬 Открываем чат:', chatId);
+    
+    try {
+        // Загружаем чат
+        const { data: chat, error } = await supabase
+            .from('chats')
+            .select(`
+                *,
+                item:items(*),
+                buyer:users!buyer_id(*),
+                seller:users!seller_id(*)
+            `)
+            .eq('id', chatId)
+            .single();
+        
+        if (error) throw error;
+        
+        currentChat = chat;
+        
+        // Определяем собеседника
+        const interlocutor = chat.buyer_id === currentUser.id ? chat.seller : chat.buyer;
+        
+        // Заполняем шапку чата
+        const avatarEl = document.getElementById('chatUserAvatar');
+        if (interlocutor.avatar_url) {
+            avatarEl.style.backgroundImage = `url(${interlocutor.avatar_url})`;
+            avatarEl.style.backgroundSize = 'cover';
+            avatarEl.textContent = '';
+        } else {
+            avatarEl.style.backgroundImage = 'none';
+            avatarEl.textContent = interlocutor.username.charAt(0).toUpperCase();
+        }
+        
+        document.getElementById('chatUsername').textContent = interlocutor.username;
+        document.getElementById('chatItemTitle').textContent = chat.item ? chat.item.title : 'Товар удалён';
+        
+        // Показываем секцию чата
+        document.getElementById('chatsSection').style.display = 'none';
+        document.getElementById('marketplaceSection').style.display = 'none';
+        document.getElementById('chatSection').style.display = 'block';
+        
+        // Загружаем сообщения
+        await loadMessages(chatId);
+        
+        // Подписываемся на новые сообщения
+        subscribeToMessages(chatId);
+        
+    } catch (error) {
+        console.error('❌ Ошибка открытия чата:', error);
+        alert('Ошибка открытия чата!');
+    }
+}
+
+async function loadMessages(chatId) {
+    try {
+        const { data: messages, error } = await supabase
+            .from('messages')
+            .select('*')
+            .eq('chat_id', chatId)
+            .order('created_at', { ascending: true });
+        
+        if (error) throw error;
+        
+        displayMessages(messages || []);
+        
+        // Помечаем сообщения как прочитанные
+        await supabase
+            .from('messages')
+            .update({ is_read: true })
+            .eq('chat_id', chatId)
+            .neq('sender_id', currentUser.id)
+            .eq('is_read', false);
+        
+    } catch (error) {
+        console.error('❌ Ошибка загрузки сообщений:', error);
+    }
+}
+
+function displayMessages(messages) {
+    const container = document.getElementById('messagesContainer');
+    
+    if (!messages || messages.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">Начните диалог!</div>';
+        return;
+    }
+    
+    container.innerHTML = messages.map(msg => {
+        const isMine = msg.sender_id === currentUser.id;
+        return `
+            <div style="display:flex;justify-content:${isMine ? 'flex-end' : 'flex-start'};margin-bottom:15px;">
+                <div style="max-width:70%;padding:12px 16px;border-radius:${isMine ? '18px 18px 4px 18px' : '18px 18px 18px 4px'};background:${isMine ? 'linear-gradient(135deg,#5ba3f5 0%,#4A90E2 100%)' : 'var(--bg-primary)'};color:${isMine ? 'white' : 'var(--text-primary)'};">
+                    <div style="word-wrap:break-word;margin-bottom:5px;">${msg.text}</div>
+                    <div style="font-size:11px;opacity:0.7;text-align:right;">${new Date(msg.created_at).toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Автоскролл вниз
+    container.scrollTop = container.scrollHeight;
+}
+
+async function sendMessage() {
+    if (!currentChat) return;
+    
+    const input = document.getElementById('messageInput');
+    const text = input.value.trim();
+    
+    if (!text) return;
+    
+    console.log('📤 Отправляем сообщение...');
+    
+    try {
+        const { error } = await supabase
+            .from('messages')
+            .insert([{
+                chat_id: currentChat.id,
+                sender_id: currentUser.id,
+                text: text
+            }]);
+        
+        if (error) throw error;
+        
+        // Очищаем input
+        input.value = '';
+        
+        // Обновляем updated_at чата
+        await supabase
+            .from('chats')
+            .update({ updated_at: new Date().toISOString() })
+            .eq('id', currentChat.id);
+        
+        console.log('✅ Сообщение отправлено');
+        
+        // Сообщения обновятся автоматически через realtime
+        
+    } catch (error) {
+        console.error('❌ Ошибка отправки сообщения:', error);
+        alert('Ошибка отправки сообщения!');
+    }
+}
+
+function subscribeToMessages(chatId) {
+    // Отписываемся от предыдущей подписки
+    if (chatRealtimeSubscription) {
+        chatRealtimeSubscription.unsubscribe();
+    }
+    
+    // Подписываемся на новые сообщения
+    chatRealtimeSubscription = supabase
+        .channel(`chat_${chatId}`)
+        .on('postgres_changes', {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'messages',
+            filter: `chat_id=eq.${chatId}`
+        }, (payload) => {
+            console.log('📨 Новое сообщение:', payload.new);
+            // Перезагружаем сообщения
+            loadMessages(chatId);
+        })
+        .subscribe();
+}
+
+async function updateUnreadBadge() {
+    if (!currentUser) return;
+    
+    try {
+        // Считаем непрочитанные сообщения
+        const { count } = await supabase
+            .from('messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_read', false)
+            .neq('sender_id', currentUser.id)
+            .in('chat_id', 
+                supabase
+                    .from('chats')
+                    .select('id')
+                    .or(`buyer_id.eq.${currentUser.id},seller_id.eq.${currentUser.id}`)
+            );
+        
+        const badge = document.getElementById('unreadBadge');
+        if (count && count > 0) {
+            badge.textContent = count;
+            badge.style.display = 'block';
+        } else {
+            badge.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Ошибка подсчёта непрочитанных:', error);
+    }
 }
 
 async function buyProduct(productName, price) {
@@ -2910,7 +3753,39 @@ function onRegisterTurnstileSuccess(token) {
 
 function openModal(modalId) { 
     clearMessages(modalId.replace('Modal', 'Error'));
-    document.getElementById(modalId).classList.add('active'); 
+    document.getElementById(modalId).classList.add('active');
+    
+    // Заполняем список игр при открытии модалки создания товара
+    if (modalId === 'createItemModal') {
+        fillItemGameSelect();
+    }
+}
+
+async function fillItemGameSelect() {
+    const select = document.getElementById('itemGame');
+    
+    // Очищаем текущие опции (кроме первой)
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+    
+    try {
+        const { data: games } = await supabase
+            .from('products')
+            .select('name')
+            .order('name');
+        
+        if (games && games.length > 0) {
+            games.forEach(game => {
+                const option = document.createElement('option');
+                option.value = game.name;
+                option.textContent = game.name;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки игр:', error);
+    }
 }
 
 function closeModal(modalId) { 
