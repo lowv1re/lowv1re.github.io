@@ -1169,9 +1169,9 @@ body {
 <div id="marketplaceSection" style="display:none;">
 <div class="container">
 <div class="profile-section">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;">
-<h2 class="section-title" style="margin:0;" data-lang-text="🛒 Маркетплейс|🛒 Marketplace">🛒 Маркетплейс</h2>
-<button class="form-submit" onclick="openModal('createItemModal')" data-lang-text="Выставить товар|List Item">+ Выставить товар</button>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;gap:15px;flex-wrap:wrap;">
+<h2 class="section-title" style="margin:0;flex-shrink:0;" data-lang-text="🛒 Маркетплейс|🛒 Marketplace">🛒 Маркетплейс</h2>
+<button class="form-submit" onclick="openModal('createItemModal')" style="flex-shrink:0;" data-lang-text="Выставить товар|List Item">+ Выставить товар</button>
 </div>
 
 <!-- Фильтры -->
@@ -3749,19 +3749,15 @@ async function buyProduct(productName, price) {
         return;
     }
     
-    // Если недостаточно средств - перенаправляем в маркетплейс
+    // Проверяем баланс
     if (currentUser.balance < price) {
-        const confirmMsg = currentLang === 'ru' 
-            ? `Недостаточно средств! Хотите посмотреть предложения других продавцов?`
-            : `Insufficient balance! Want to see offers from other sellers?`;
+        const msg = currentLang === 'ru' 
+            ? `Недостаточно средств!\n\nНа балансе: ${currentUser.balance}₽\nНужно: ${price}₽\n\nХотите посмотреть предложения других продавцов?`
+            : `Insufficient balance!\n\nYour balance: ${currentUser.balance}₽\nRequired: ${price}₽\n\nWant to see offers from other sellers?`;
         
-        if (confirm(confirmMsg)) {
-            showMarketplace();
-            // Фильтруем по игре
-            setTimeout(() => {
-                document.getElementById('gameFilter').value = productName;
-                filterMarketplace();
-            }, 100);
+        if (confirm(msg)) {
+            // Открываем маркетплейс с фильтром по этой игре
+            viewGameMarketplace(productName);
         }
         return;
     }
@@ -3787,6 +3783,23 @@ async function buyProduct(productName, price) {
         alert(currentLang === 'ru' ? 'Ошибка при покупке!' : 'Purchase error!');
         console.error('Ошибка покупки:', error);
     }
+}
+
+// Функция для просмотра предложений пользователей по игре
+function viewGameMarketplace(gameName) {
+    console.log('📦 Открываем маркетплейс для игры:', gameName);
+    
+    // Открываем маркетплейс
+    showMarketplace();
+    
+    // Фильтруем по игре
+    setTimeout(() => {
+        const gameFilter = document.getElementById('gameFilter');
+        if (gameFilter) {
+            gameFilter.value = gameName;
+            filterMarketplace();
+        }
+    }, 100);
 }
 
 // === ПУБЛИЧНЫЙ ПРОФИЛЬ ===
