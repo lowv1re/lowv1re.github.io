@@ -3698,28 +3698,7 @@ async function buyProduct(productName, price) {
         return;
     }
     try {
-        const { data: product } = await supabase
-            .from('products')
-            .select('id')
-            .eq('name', productName)
-            .maybeSingle();
-        
-        if (!product) {
-            alert(currentLang === 'ru' ? 'Товар не найден!' : 'Product not found!');
-            return;
-        }
-        
-        const { error: orderError } = await supabase
-            .from('orders')
-            .insert([{
-                user_id: currentUser.id, 
-                product_id: product.id, 
-                amount: price, 
-                status: 'pending'
-            }]);
-        
-        if (orderError) throw orderError;
-        
+        // Списываем баланс
         const newBalance = currentUser.balance - price;
         const { error: balanceError } = await supabase
             .from('users')
@@ -3728,15 +3707,16 @@ async function buyProduct(productName, price) {
         
         if (balanceError) throw balanceError;
         
+        // Обновляем локальный баланс
         currentUser.balance = newBalance;
-        document.getElementById('profileBalance').textContent = `${newBalance}₽`;
+        updateBalance();
         
         alert(currentLang === 'ru' 
-            ? `Товар "${productName}" куплен! Свяжитесь с @lowv1rre для получения.` 
-            : `Product "${productName}" purchased! Contact @lowv1rre to receive.`);
+            ? `Товар "${productName}" куплен за ${price}₽! Свяжитесь с @lowv1rre в Telegram для получения.` 
+            : `Product "${productName}" purchased for ${price}₽! Contact @lowv1rre on Telegram to receive.`);
     } catch (error) {
         alert(currentLang === 'ru' ? 'Ошибка при покупке!' : 'Purchase error!');
-        console.error(error);
+        console.error('Ошибка покупки:', error);
     }
 }
 
